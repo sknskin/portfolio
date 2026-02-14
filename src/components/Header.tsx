@@ -1,28 +1,44 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Menu, X, Sun, Moon } from 'lucide-react';
 import { navItems } from '../data/portfolio';
 import { useTheme } from '../contexts/ThemeContext';
 import { useLanguage } from '../contexts/LanguageContext';
 
 export default function Header() {
+  const [visible, setVisible] = useState(true);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const { lang, toggleLang } = useLanguage();
+  const lastY = useRef(0);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', onScroll);
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 50);
+
+      if (y < 50) {
+        setVisible(true);
+      } else if (y < lastY.current) {
+        setVisible(true);
+      } else if (y > lastY.current + 5) {
+        setVisible(false);
+        setMenuOpen(false);
+      }
+      lastY.current = y;
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled ? 'bg-header backdrop-blur-xl' : 'bg-transparent'
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-[background-color,backdrop-filter,transform,opacity] duration-400 ${
+        scrolled ? 'bg-header backdrop-blur-xl shadow-[0_1px_0_var(--border-subtle)]' : 'bg-transparent'
+      } ${visible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}
+      style={{ paddingRight: 'var(--scrollbar-compensation, 0px)' }}
     >
-      <nav className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <nav className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
         {/* Left: Logo + Toggles */}
         <div className="flex items-center gap-2">
           <a

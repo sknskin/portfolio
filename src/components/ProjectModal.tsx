@@ -31,13 +31,18 @@ export default function ProjectModal({
   useEffect(() => {
     if (!project) return;
 
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    document.documentElement.style.setProperty('--scrollbar-compensation', `${scrollbarWidth}px`);
     document.body.style.overflow = 'hidden';
+    document.body.style.paddingRight = `${scrollbarWidth}px`;
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') handleClose();
     };
     document.addEventListener('keydown', onKeyDown);
     return () => {
+      document.documentElement.style.removeProperty('--scrollbar-compensation');
       document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
       document.removeEventListener('keydown', onKeyDown);
     };
   }, [project, handleClose]);
@@ -61,17 +66,43 @@ export default function ProjectModal({
   return createPortal(
     <AnimatePresence mode="wait">
       {project && (
+        <>
+          {cardRect && !isClosing && (
+            <motion.div
+              className="pointer-events-none fixed z-[9999] rounded-full"
+              style={{
+                left: cardCenterX,
+                top: cardCenterY,
+                translateX: '-50%',
+                translateY: '-50%',
+              }}
+              initial={{
+                width: 0,
+                height: 0,
+                opacity: 0.5,
+                boxShadow: '0 0 0 2px var(--glow-border)',
+              }}
+              animate={{
+                width: 800,
+                height: 800,
+                opacity: 0,
+                boxShadow: '0 0 0 1px var(--glow-border)',
+              }}
+              transition={{ duration: 0.6, ease: 'easeOut' }}
+            />
+          )}
         <motion.div
           className="fixed inset-0 z-[10000] flex items-center justify-center p-4 md:p-8"
-          initial={{ backgroundColor: 'rgba(0, 0, 0, 0)' }}
-          animate={
-            isClosing
-              ? { backgroundColor: 'rgba(0, 0, 0, 0)' }
-              : { backgroundColor: 'rgba(0, 0, 0, 0.8)' }
-          }
+          initial={{ opacity: 0 }}
+          animate={isClosing ? { opacity: 0 } : { opacity: 1 }}
           transition={{ duration: 0.4 }}
           onClick={handleClose}
-          style={{ perspective: '1200px' }}
+          style={{
+            perspective: '1200px',
+            backgroundColor: 'var(--modal-overlay)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+          }}
         >
           <motion.div
             className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl bg-dark-card"
@@ -232,6 +263,7 @@ export default function ProjectModal({
             </div>
           </motion.div>
         </motion.div>
+        </>
       )}
     </AnimatePresence>,
     document.body,

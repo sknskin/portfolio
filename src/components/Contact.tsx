@@ -14,7 +14,7 @@ export default function Contact() {
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
+          viewport={{ margin: '-100px' }}
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-sm text-text-secondary font-medium mb-10 tracking-widest uppercase">
@@ -23,7 +23,7 @@ export default function Contact() {
 
           <GlowCard>
             <div className="p-8 md:p-12 text-center">
-              <p className="text-text-secondary mb-8 max-w-md mx-auto leading-relaxed">
+              <p className="text-text-secondary mb-8 mx-auto leading-relaxed whitespace-nowrap">
                 {tr('contact.desc', lang)}
               </p>
 

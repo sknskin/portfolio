@@ -1,7 +1,7 @@
 import type { Lang } from '../contexts/LanguageContext';
 
 const translations: Record<string, { ko: string; en: string }> = {
-  'hero.greeting': { ko: '안녕하세요,', en: "Hello, I'm" },
+  'hero.greeting': { ko: '안녕하세요', en: "Hello, I'm" },
   'contact.desc': {
     ko: '프로젝트 협업이나 채용 관련 문의는 아래 이메일로 연락해 주세요.',
     en: 'Feel free to reach out for project collaboration or job inquiries.',

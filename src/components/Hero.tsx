@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ArrowDown, Github, Linkedin, ExternalLink } from 'lucide-react';
+import { ArrowDown, Github, Linkedin, ExternalLink, PenLine } from 'lucide-react';
 import { profile, socialLinks } from '../data/portfolio';
 import { useLanguage } from '../contexts/LanguageContext';
 import { tr } from '../data/i18n';
@@ -7,6 +7,7 @@ import { tr } from '../data/i18n';
 const iconMap: Record<string, typeof Github> = {
   GitHub: Github,
   LinkedIn: Linkedin,
+  Velog: PenLine,
 };
 
 export default function Hero() {
@@ -15,10 +16,10 @@ export default function Hero() {
   return (
     <section className="relative min-h-screen flex items-center justify-center px-6 overflow-hidden">
       {/* Background gradients */}
-      <div className="absolute inset-0">
-        <div className="absolute top-[15%] left-[20%] w-[500px] h-[500px] bg-primary/15 rounded-full blur-[150px]" />
-        <div className="absolute bottom-[20%] right-[15%] w-[400px] h-[400px] bg-accent-blue/10 rounded-full blur-[130px]" />
-        <div className="absolute top-[60%] left-[50%] w-[300px] h-[300px] bg-accent-pink/8 rounded-full blur-[120px]" />
+      <div className="absolute inset-0 will-change-transform">
+        <div className="absolute top-[15%] left-[20%] w-[500px] h-[500px] bg-primary/15 rounded-full blur-[150px] will-change-transform" />
+        <div className="absolute bottom-[20%] right-[15%] w-[400px] h-[400px] bg-accent-blue/10 rounded-full blur-[130px] will-change-transform" />
+        <div className="absolute top-[60%] left-[50%] w-[300px] h-[300px] bg-accent-pink/8 rounded-full blur-[120px] will-change-transform" />
       </div>
 
       <div className="relative z-10 text-center max-w-3xl">
@@ -40,7 +41,7 @@ export default function Hero() {
             backgroundImage: `linear-gradient(to right, var(--hero-from), var(--hero-via), var(--hero-to))`,
           }}
         >
-          {profile.name}
+          {profile.name[lang]}
         </motion.h1>
 
         <motion.p

@@ -7,50 +7,52 @@
   --text-1: #f0f0f0;
   --text-2: #8b8b8b;
   --text-3: #555555;
-  --border-subtle: rgba(255, 255, 255, 0.06);
-  --tag-bg: rgba(255, 255, 255, 0.05);
-  --tag-bg-hover: rgba(255, 255, 255, 0.1);
-  --header-bg: rgba(0, 0, 0, 0.6);
-  --header-mobile-bg: rgba(0, 0, 0, 0.9);
-  --glow-1: rgba(124, 58, 237, 0.18);
-  --glow-2: rgba(59, 130, 246, 0.10);
-  --glow-border: rgba(124, 58, 237, 0.35);
-  --card-hover-shadow: 0 0 40px rgba(124, 58, 237, 0.08);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --tag-bg: rgba(255, 255, 255, 0.06);
+  --tag-bg-hover: rgba(255, 255, 255, 0.12);
+  --header-bg: rgba(0, 0, 0, 0.3);
+  --header-mobile-bg: rgba(0, 0, 0, 0.6);
+  --glow-1: rgba(124, 58, 237, 0.22);
+  --glow-2: rgba(59, 130, 246, 0.12);
+  --glow-border: rgba(124, 58, 237, 0.40);
+  --card-hover-shadow: 0 0 50px rgba(124, 58, 237, 0.12), 0 0 20px rgba(59, 130, 246, 0.06);
   --scrollbar-thumb: rgba(255, 255, 255, 0.1);
   --scrollbar-hover: rgba(255, 255, 255, 0.2);
   --timeline-line: rgba(255, 255, 255, 0.05);
-  --feature-bg: rgba(255, 255, 255, 0.03);
+  --feature-bg: rgba(255, 255, 255, 0.04);
   --hero-from: #ffffff;
   --hero-via: #a78bfa;
   --hero-to: #3b82f6;
-  --modal-card-shadow: 0 0 80px rgba(124, 58, 237, 0.15), 0 0 0 1px rgba(124, 58, 237, 0.15);
+  --modal-card-shadow: 0 0 80px rgba(124, 58, 237, 0.20), 0 0 0 1px rgba(124, 58, 237, 0.18);
+  --modal-overlay: rgba(0, 0, 0, 0.6);
 }
 
 html.light {
-  --bg-main: #fafafa;
-  --bg-card: #ffffff;
-  --bg-surface: #f5f5f5;
-  --text-1: #1a1a1a;
-  --text-2: #555555;
-  --text-3: #999999;
-  --border-subtle: rgba(0, 0, 0, 0.08);
-  --tag-bg: rgba(0, 0, 0, 0.04);
-  --tag-bg-hover: rgba(0, 0, 0, 0.08);
-  --header-bg: rgba(250, 250, 250, 0.8);
-  --header-mobile-bg: rgba(250, 250, 250, 0.95);
-  --glow-1: rgba(124, 58, 237, 0.10);
-  --glow-2: rgba(59, 130, 246, 0.06);
+  --bg-main: #f3f0ff;
+  --bg-card: rgba(255, 255, 255, 0.75);
+  --bg-surface: #e9e4fd;
+  --text-1: #1e1b3a;
+  --text-2: #3d3760;
+  --text-3: #7a7298;
+  --border-subtle: rgba(124, 58, 237, 0.15);
+  --tag-bg: rgba(124, 58, 237, 0.08);
+  --tag-bg-hover: rgba(124, 58, 237, 0.16);
+  --header-bg: rgba(243, 240, 255, 0.3);
+  --header-mobile-bg: rgba(243, 240, 255, 0.65);
+  --glow-1: rgba(124, 58, 237, 0.20);
+  --glow-2: rgba(59, 130, 246, 0.10);
   --glow-border: rgba(124, 58, 237, 0.35);
-  --card-hover-shadow: 0 8px 30px rgba(124, 58, 237, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
-  --card-hover-bg: rgba(124, 58, 237, 0.03);
-  --scrollbar-thumb: rgba(0, 0, 0, 0.12);
-  --scrollbar-hover: rgba(0, 0, 0, 0.2);
-  --timeline-line: rgba(0, 0, 0, 0.06);
-  --feature-bg: rgba(0, 0, 0, 0.03);
-  --hero-from: #1a1a1a;
+  --card-hover-shadow: 0 8px 40px rgba(124, 58, 237, 0.20), 0 0 0 1px rgba(124, 58, 237, 0.15);
+  --card-hover-bg: rgba(255, 255, 255, 0.95);
+  --scrollbar-thumb: rgba(124, 58, 237, 0.18);
+  --scrollbar-hover: rgba(124, 58, 237, 0.30);
+  --timeline-line: rgba(124, 58, 237, 0.10);
+  --feature-bg: rgba(124, 58, 237, 0.06);
+  --hero-from: #1e1b3a;
   --hero-via: #7c3aed;
   --hero-to: #3b82f6;
-  --modal-card-shadow: 0 4px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.06);
+  --modal-card-shadow: 0 8px 60px rgba(124, 58, 237, 0.22), 0 0 0 1px rgba(124, 58, 237, 0.15);
+  --modal-overlay: rgba(243, 240, 255, 0.65);
 }
 
 @theme {
@@ -84,6 +86,7 @@ body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 ::selection {

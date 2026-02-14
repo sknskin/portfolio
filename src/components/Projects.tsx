@@ -24,7 +24,7 @@ export default function Projects() {
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
+            viewport={{ margin: '-100px' }}
             transition={{ duration: 0.6 }}
           >
             <h2 className="text-sm text-text-secondary font-medium mb-10 tracking-widest uppercase">
@@ -37,7 +37,7 @@ export default function Projects() {
                   key={project.title}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
+                  viewport={{ margin: '-50px' }}
                   transition={{ duration: 0.4, delay: idx * 0.1 }}
                 >
                   <GlowCard
