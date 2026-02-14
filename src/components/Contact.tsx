@@ -1,10 +1,15 @@
 import { motion } from 'framer-motion';
-import { Mail, Send } from 'lucide-react';
-import { profile, socialLinks } from '../data/portfolio';
+import { Send } from 'lucide-react';
+import { profile, socialLinks, navItems } from '../data/portfolio';
+import { useLanguage } from '../contexts/LanguageContext';
+import { tr } from '../data/i18n';
+import GlowCard from './GlowCard';
 
 export default function Contact() {
+  const { lang } = useLanguage();
+
   return (
-    <section id="contact" className="py-24 px-6">
+    <section id="contact" className="py-28 px-6">
       <div className="max-w-4xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -12,38 +17,39 @@ export default function Contact() {
           viewport={{ once: true, margin: '-100px' }}
           transition={{ duration: 0.6 }}
         >
-          <div className="flex items-center gap-3 mb-8">
-            <Mail size={20} className="text-primary" />
-            <h2 className="text-2xl font-bold">Contact</h2>
-          </div>
+          <h2 className="text-sm text-text-secondary font-medium mb-10 tracking-widest uppercase">
+            {navItems[3].label[lang]}
+          </h2>
 
-          <div className="bg-dark-card border border-dark-border rounded-2xl p-8 md:p-10 text-center">
-            <p className="text-text-secondary mb-6 max-w-md mx-auto">
-              프로젝트 협업이나 채용 관련 문의는 아래 이메일로 연락해 주세요.
-            </p>
+          <GlowCard>
+            <div className="p-8 md:p-12 text-center">
+              <p className="text-text-secondary mb-8 max-w-md mx-auto leading-relaxed">
+                {tr('contact.desc', lang)}
+              </p>
 
-            <a
-              href={`mailto:${profile.email}`}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary hover:bg-primary-light text-white font-medium transition-colors"
-            >
-              <Send size={18} />
-              이메일 보내기
-            </a>
+              <a
+                href={`mailto:${profile.email}`}
+                className="inline-flex items-center gap-2 px-7 py-3 rounded-full bg-gradient-to-r from-primary to-accent-blue text-white font-medium text-sm hover:opacity-90 transition-opacity duration-300"
+              >
+                <Send size={16} />
+                {tr('contact.send', lang)}
+              </a>
 
-            <div className="flex items-center justify-center gap-6 mt-8">
-              {socialLinks.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-text-secondary hover:text-primary transition-colors"
-                >
-                  {link.label}
-                </a>
-              ))}
+              <div className="flex items-center justify-center gap-8 mt-10">
+                {socialLinks.map((link) => (
+                  <a
+                    key={link.label}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-text-tertiary hover:text-text-primary transition-colors duration-200"
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </div>
             </div>
-          </div>
+          </GlowCard>
         </motion.div>
       </div>
     </section>

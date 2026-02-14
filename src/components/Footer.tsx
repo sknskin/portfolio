@@ -1,9 +1,14 @@
+import { useLanguage } from '../contexts/LanguageContext';
+import { tr } from '../data/i18n';
+
 export default function Footer() {
+  const { lang } = useLanguage();
+
   return (
-    <footer className="border-t border-dark-border py-8 px-6">
+    <footer className="py-10 px-6">
       <div className="max-w-4xl mx-auto text-center">
-        <p className="text-sm text-text-secondary">
-          &copy; {new Date().getFullYear()} Portfolio. Built with React & Tailwind CSS.
+        <p className="text-xs text-text-tertiary">
+          &copy; {new Date().getFullYear()} Portfolio. {tr('footer.built', lang)}
         </p>
       </div>
     </footer>
