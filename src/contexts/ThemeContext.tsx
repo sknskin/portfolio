@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import { createContext, useContext, useState, useLayoutEffect, type ReactNode } from 'react';
 
 type Theme = 'dark' | 'light';
 
@@ -23,7 +23,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     return saved === 'light' ? 'light' : 'dark';
   });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const root = document.documentElement;
     if (theme === 'light') {
       root.classList.add('light');
