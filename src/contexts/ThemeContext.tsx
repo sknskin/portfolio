@@ -33,7 +33,16 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('portfolio-theme', theme);
   }, [theme]);
 
-  const toggleTheme = () => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  const toggleTheme = () => {
+    const root = document.documentElement;
+    root.classList.add('disable-transitions');
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        root.classList.remove('disable-transitions');
+      });
+    });
+  };
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>

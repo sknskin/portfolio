@@ -96,7 +96,13 @@ html.light {
 html {
   scroll-behavior: smooth;
   background-color: var(--bg-glow-tint);
-  transition: background-color 0.3s ease;
+}
+
+html.disable-transitions,
+html.disable-transitions *,
+html.disable-transitions *::before,
+html.disable-transitions *::after {
+  transition: none !important;
 }
 
 body {
@@ -106,7 +112,6 @@ body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: color 0.3s ease;
 }
 
 ::selection {
