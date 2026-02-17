@@ -5,13 +5,16 @@ let gMouseX = -1;
 let gMouseY = -1;
 let gListenerAttached = false;
 
+function updateMousePos(e: { clientX: number; clientY: number }) {
+  gMouseX = e.clientX;
+  gMouseY = e.clientY;
+}
+
 function ensureGlobalMouseTracker() {
   if (gListenerAttached) return;
   gListenerAttached = true;
-  window.addEventListener('mousemove', (e) => {
-    gMouseX = e.clientX;
-    gMouseY = e.clientY;
-  }, { passive: true });
+  window.addEventListener('mousemove', updateMousePos, { passive: true });
+  window.addEventListener('wheel', updateMousePos, { passive: true });
 }
 
 interface GlowCardProps {
