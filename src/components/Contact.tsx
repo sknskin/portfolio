@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Copy, Check, Github, Mail, Phone } from 'lucide-react';
+import { Send, Copy, Check, Github, Mail, Phone, MapPin } from 'lucide-react';
 import { profile, socialLinks, navItems } from '../data/portfolio';
 import { useLanguage } from '../contexts/LanguageContext';
 import { tr } from '../data/i18n';
@@ -61,6 +61,19 @@ export default function Contact() {
                     className="p-2 rounded-full bg-tag text-text-tertiary hover:text-text-primary hover:bg-tag-hover transition-all duration-200 cursor-pointer"
                   >
                     {copiedKey === 'phone' ? <Check size={16} /> : <Copy size={16} />}
+                  </button>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <MapPin size={16} className="text-text-tertiary shrink-0" />
+                  <span className="text-text-primary font-medium text-sm tracking-wide">
+                    {profile.address[lang]}
+                  </span>
+                  <button
+                    onClick={(e) => handleCopy(profile.address[lang], 'address', e)}
+                    className="p-2 rounded-full bg-tag text-text-tertiary hover:text-text-primary hover:bg-tag-hover transition-all duration-200 cursor-pointer shrink-0"
+                  >
+                    {copiedKey === 'address' ? <Check size={16} /> : <Copy size={16} />}
                   </button>
                 </div>
               </div>

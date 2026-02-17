@@ -32,6 +32,13 @@ export interface SocialLink {
   url: string;
 }
 
+export interface Education {
+  school: Bi;
+  major?: Bi;
+  period: string;
+  graduated?: boolean;
+}
+
 export const profile = {
   name: { ko: '한도희', en: 'Han Do Hee'} as Bi,
   role: { ko: '풀스택 개발자', en: 'Full-Stack Developer' } as Bi,
@@ -51,7 +58,25 @@ export const profile = {
   } as Bi,
   email: 'sknskin@naver.com',
   phone: '010-7455-4829',
+  address: {
+    ko: '경기도 용인시 기흥구 용구대로 2394번길 27 래미안1차 115동 904호',
+    en: '27, Yonggu-daero 2394beon-gil, Giheung-gu, Yongin-si, Gyeonggi-do',
+  } as Bi,
 };
+
+export const education: Education[] = [
+  {
+    school: { ko: '중앙대학교 서울캠퍼스', en: 'Chung-Ang University (Seoul Campus)' },
+    major: { ko: '영어영문학과', en: 'English Language & Literature' },
+    period: '2012 - 2021',
+    graduated: true,
+  },
+  {
+    school: { ko: '수지고등학교', en: 'Suji High School' },
+    period: '2009 - 2011',
+    graduated: true,
+  },
+];
 
 export const socialLinks: SocialLink[] = [
   { label: 'GitHub', url: 'https://github.com/sknskin' },

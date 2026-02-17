@@ -12,6 +12,8 @@ const translations: Record<string, { ko: string; en: string }> = {
   },
   'contact.send': { ko: '이메일 보내기', en: 'Send Email' },
   'contact.copied': { ko: '클립보드에 복사되었습니다!', en: 'Copied to clipboard!' },
+  'about.education': { ko: '학력', en: 'Education' },
+  'about.graduated': { ko: '졸업', en: 'Graduated' },
   'modal.details': { ko: '상세 내용', en: 'Details' },
   'modal.features': { ko: '주요 기능', en: 'Features' },
   'modal.tech': { ko: '기술 스택', en: 'Tech Stack' },
