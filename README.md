@@ -1,73 +1,68 @@
-# React + TypeScript + Vite
+# Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+개인 포트폴리오 웹사이트 — 풀스택 개발자 한도희의 경력, 기술 스택, 프로젝트를 소개하는 SPA입니다.
 
-Currently, two official plugins are available:
+## 기술 스택
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+| 영역 | 기술 |
+|------|------|
+| 프레임워크 | React 19, TypeScript 5.9 |
+| 빌드 | Vite 7 |
+| 스타일링 | Tailwind CSS 4 |
+| 애니메이션 | Framer Motion |
+| 아이콘 | Lucide React |
+| 테스트 | Playwright (E2E) |
+| 배포 | Vercel |
 
-## React Compiler
+## 주요 기능
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **다국어 지원** — 한국어 / English 전환
+- **다크/라이트 테마** — localStorage 기반 테마 저장
+- **반응형 디자인** — 모바일, 태블릿, 데스크톱 대응
+- **스크롤 애니메이션** — Framer Motion 기반 ScrollReveal
+- **프로젝트 모달** — 상세 프로젝트 정보를 모달로 표시
 
-## Expanding the ESLint configuration
+## 프로젝트 구조
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+src/
+├── App.tsx                    # 메인 컴포넌트
+├── main.tsx                   # 엔트리 포인트
+├── components/
+│   ├── Header.tsx             # 네비게이션 (스크롤 감지, 활성 섹션)
+│   ├── Hero.tsx               # 인트로 섹션
+│   ├── About.tsx              # 소개
+│   ├── Skills.tsx             # 기술 스택 (카테고리별)
+│   ├── Projects.tsx           # 프로젝트 목록
+│   ├── ProjectModal.tsx       # 프로젝트 상세 모달
+│   ├── Contact.tsx            # 연락처
+│   ├── ScrollReveal.tsx       # 스크롤 애니메이션 래퍼
+│   ├── GlowCard.tsx           # 글로우 효과 카드
+│   ├── TechMarquee.tsx        # 기술 마퀴 애니메이션
+│   ├── Preloader.tsx          # 로딩 애니메이션
+│   └── BackgroundGlow.tsx     # 배경 글로우 효과
+├── contexts/
+│   ├── ThemeContext.tsx        # 다크/라이트 테마
+│   └── LanguageContext.tsx     # 한국어/영어 전환
+├── data/
+│   ├── portfolio.ts           # 프로필, 스킬, 프로젝트 데이터
+│   ├── i18n.ts                # 다국어 번역
+│   └── techIcons.ts           # 기술 아이콘 매핑
+└── index.css                  # 글로벌 스타일
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 로컬 실행
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```bash
+# 의존성 설치
+npm install
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# 개발 서버 실행
+npm run dev
+
+# 프로덕션 빌드
+npm run build
+
+# E2E 테스트
+npx playwright test
 ```
