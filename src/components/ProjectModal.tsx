@@ -1,6 +1,6 @@
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useCallback, useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { X, Github, ExternalLink } from 'lucide-react';
 import type { Project } from '../data/portfolio';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -12,24 +12,68 @@ interface ProjectModalProps {
   onClose: () => void;
 }
 
+const DURATION = 0.5;
+type Phase = 'idle' | 'opening' | 'open' | 'closing' | 'fading';
+
 export default function ProjectModal({
   project,
   cardRect,
   onClose,
 }: ProjectModalProps) {
   const { lang } = useLanguage();
-  const [isClosing, setIsClosing] = useState(false);
+  const [phase, setPhase] = useState<Phase>('idle');
+  const [dp, setDp] = useState<Project | null>(null);
+  const glowRef = useRef<HTMLDivElement>(null);
+
+  // Capture project for display — persists through close animation
+  // (React "adjust state during render" pattern)
+  if (project && project !== dp) {
+    setDp(project);
+  }
+
+  // Start opening when project arrives
+  if (project && phase === 'idle') {
+    setPhase('opening');
+  }
+
+  // Clear display project when fully idle
+  if (phase === 'idle' && !project && dp) {
+    setDp(null);
+  }
+
+  // Schedule content reveal after shell expansion
+  useEffect(() => {
+    if (phase === 'opening') {
+      const t = window.setTimeout(() => setPhase('open'), DURATION * 1000);
+      return () => window.clearTimeout(t);
+    }
+  }, [phase]);
 
   const handleClose = useCallback(() => {
-    setIsClosing(true);
+    setPhase('closing');
     setTimeout(() => {
-      setIsClosing(false);
-      onClose();
-    }, 500);
+      onClose();          // card starts fade-in
+      setPhase('fading'); // shell starts cross-fade out
+      setTimeout(() => setPhase('idle'), 250);
+    }, DURATION * 0.6 * 1000);
   }, [onClose]);
 
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!glowRef.current) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    glowRef.current.style.background = `radial-gradient(500px circle at ${x}px ${y}px, var(--glow-1), transparent 70%)`;
+    glowRef.current.style.opacity = '1';
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    if (!glowRef.current) return;
+    glowRef.current.style.opacity = '0';
+  }, []);
+
   useEffect(() => {
-    if (!project) return;
+    if (phase === 'idle' || !dp) return;
 
     const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
     document.documentElement.style.setProperty('--scrollbar-compensation', `${scrollbarWidth}px`);
@@ -45,227 +89,210 @@ export default function ProjectModal({
       document.body.style.paddingRight = '';
       document.removeEventListener('keydown', onKeyDown);
     };
-  }, [project, handleClose]);
+  }, [phase, dp, handleClose]);
 
-  // Calculate animation values from card rect
-  const modalWidth = Math.min(672, window.innerWidth - 64); // max-w-2xl = 672px
+  if (phase === 'idle' || !dp) return null;
+
+  const modalWidth = Math.min(672, window.innerWidth - 64);
   const modalHeight = Math.min(window.innerHeight * 0.85, 700);
 
-  const centerX = window.innerWidth / 2;
-  const centerY = window.innerHeight / 2;
+  const isExpanded = phase === 'opening' || phase === 'open';
+  const showContent = phase === 'open';
+  const isFading = phase === 'fading';
 
-  const cardCenterX = cardRect ? cardRect.left + cardRect.width / 2 : centerX;
-  const cardCenterY = cardRect ? cardRect.top + cardRect.height / 2 : centerY;
+  const cardInitial = {
+    top: cardRect?.top ?? (window.innerHeight - modalHeight) / 2,
+    left: cardRect?.left ?? (window.innerWidth - modalWidth) / 2,
+    width: cardRect?.width ?? modalWidth,
+    height: cardRect?.height ?? modalHeight,
+  };
 
-  const offsetX = cardCenterX - centerX;
-  const offsetY = cardCenterY - centerY;
-
-  const scaleX = cardRect ? cardRect.width / modalWidth : 0.5;
-  const scaleY = cardRect ? cardRect.height / modalHeight : 0.3;
+  const modalFinal = {
+    top: (window.innerHeight - modalHeight) / 2,
+    left: (window.innerWidth - modalWidth) / 2,
+    width: modalWidth,
+    height: modalHeight,
+  };
 
   return createPortal(
-    <AnimatePresence mode="wait">
-      {project && (
-        <>
-          {cardRect && !isClosing && (
-            <motion.div
-              className="pointer-events-none fixed z-[9999] rounded-full"
-              style={{
-                left: cardCenterX,
-                top: cardCenterY,
-                translateX: '-50%',
-                translateY: '-50%',
-              }}
-              initial={{
-                width: 0,
-                height: 0,
-                opacity: 0.5,
-                boxShadow: '0 0 0 2px var(--glow-border)',
-              }}
-              animate={{
-                width: 800,
-                height: 800,
-                opacity: 0,
-                boxShadow: '0 0 0 1px var(--glow-border)',
-              }}
-              transition={{ duration: 0.6, ease: 'easeOut' }}
-            />
-          )}
+    <div
+      className="fixed inset-0 z-[10000]"
+      style={{ pointerEvents: isFading ? 'none' : 'auto' }}
+    >
+      {/* Overlay */}
+      <div
+        className="absolute inset-0"
+        onClick={handleClose}
+        style={{
+          backgroundColor: 'var(--modal-overlay)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          opacity: isExpanded ? 1 : 0,
+          transition: `opacity ${DURATION * 0.7}s cubic-bezier(0.4, 0, 0.2, 1)`,
+          pointerEvents: isExpanded ? 'auto' : 'none',
+        }}
+      />
+
+      {/* Shell — morphs from card rect to modal rect, cross-fades on close */}
+      <div
+        style={{
+          opacity: isFading ? 0 : 1,
+          transition: 'opacity 0.25s ease',
+        }}
+      >
         <motion.div
-          className="fixed inset-0 z-[10000] flex items-center justify-center p-4 md:p-8"
-          initial={{ opacity: 0 }}
-          animate={isClosing ? { opacity: 0 } : { opacity: 1 }}
-          transition={{ duration: 0.4 }}
-          onClick={handleClose}
+          className="absolute rounded-2xl bg-dark-card overflow-hidden"
           style={{
-            perspective: '1200px',
-            backgroundColor: 'var(--modal-overlay)',
-            backdropFilter: 'blur(12px)',
-            WebkitBackdropFilter: 'blur(12px)',
+            boxShadow: isExpanded
+              ? 'var(--modal-card-shadow)'
+              : 'inset 0 0 0 1px var(--border-subtle)',
+            transition: `box-shadow ${DURATION}s cubic-bezier(0.4, 0, 0.2, 1)`,
           }}
+          initial={cardInitial}
+          animate={isExpanded ? modalFinal : cardInitial}
+          transition={{ duration: DURATION, ease: [0.4, 0, 0.2, 1] }}
+          onClick={(e) => e.stopPropagation()}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
         >
-          <motion.div
-            className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl bg-dark-card"
+          <div
+            ref={glowRef}
+            className="pointer-events-none absolute inset-0 z-0 rounded-2xl transition-opacity duration-300"
+            style={{ opacity: 0 }}
+          />
+
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent z-[1]" />
+
+          <button
+            onClick={handleClose}
+            className="absolute top-4 right-4 z-10 p-2 rounded-full bg-tag text-text-tertiary hover:text-text-primary hover:bg-tag-hover transition-all duration-200 cursor-pointer"
             style={{
-              boxShadow: 'var(--modal-card-shadow)',
-              transformStyle: 'preserve-3d',
+              opacity: showContent ? 1 : 0,
+              transition: `opacity ${DURATION * 0.5}s ease`,
             }}
-            initial={{
-              x: offsetX,
-              y: offsetY,
-              scaleX,
-              scaleY,
-              rotateY: -180,
-              rotateX: 8,
-              opacity: 0,
-            }}
-            animate={
-              isClosing
-                ? {
-                    x: offsetX,
-                    y: offsetY,
-                    scaleX,
-                    scaleY,
-                    rotateY: -180,
-                    rotateX: 8,
-                    opacity: 0,
-                  }
-                : {
-                    x: 0,
-                    y: 0,
-                    scaleX: 1,
-                    scaleY: 1,
-                    rotateY: 0,
-                    rotateX: 0,
-                    opacity: 1,
-                  }
-            }
-            transition={{
-              type: 'spring',
-              damping: 28,
-              stiffness: 200,
-              mass: 0.8,
-            }}
-            onClick={(e) => e.stopPropagation()}
           >
-            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+            <X size={18} />
+          </button>
 
-            <button
-              onClick={handleClose}
-              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-tag text-text-tertiary hover:text-text-primary hover:bg-tag-hover transition-all duration-200"
-            >
-              <X size={18} />
-            </button>
+          <div
+            className="h-full"
+            style={{ overflowY: showContent ? 'auto' : 'hidden' }}
+          >
+          <div
+            className="relative z-[2] p-8 md:p-10"
+            style={{
+              opacity: showContent ? 1 : 0,
+              transform: showContent ? 'translateY(0)' : 'translateY(12px)',
+              transition: `opacity ${DURATION * 0.6}s ease, transform ${DURATION * 0.6}s ease`,
+            }}
+          >
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-text-primary mb-3">
+                {dp.title}
+              </h2>
 
-            <div className="p-8 md:p-10">
-              <div className="mb-8">
-                <h2 className="text-2xl font-bold text-text-primary mb-3">
-                  {project.title}
-                </h2>
-
-                {(project.period || project.role) && (
-                  <div className="flex items-center gap-3 text-sm text-text-tertiary">
-                    {project.period && <span>{project.period}</span>}
-                    {project.period && project.role && (
-                      <span className="text-[4px]">&#9679;</span>
-                    )}
-                    {project.role && <span>{project.role[lang]}</span>}
-                  </div>
-                )}
-              </div>
-
-              <p className="text-text-secondary leading-relaxed mb-8">
-                {project.description[lang]}
-              </p>
-
-              {project.details && project.details.length > 0 && (
-                <div className="mb-8">
-                  <h3 className="text-xs text-text-tertiary font-medium tracking-widest uppercase mb-4">
-                    {tr('modal.details', lang)}
-                  </h3>
-                  <ul className="space-y-2.5">
-                    {project.details.map((detail, i) => (
-                      <li
-                        key={i}
-                        className="text-sm text-text-secondary flex items-start gap-2.5"
-                      >
-                        <span className="text-primary mt-1.5 text-[5px]">
-                          &#9679;
-                        </span>
-                        {detail[lang]}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {project.features && project.features.length > 0 && (
-                <div className="mb-8">
-                  <h3 className="text-xs text-text-tertiary font-medium tracking-widest uppercase mb-4">
-                    {tr('modal.features', lang)}
-                  </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {project.features.map((feature, i) => (
-                      <div
-                        key={i}
-                        className="flex items-center gap-2.5 text-sm text-text-secondary px-3 py-2 rounded-lg bg-feature"
-                      >
-                        <div className="w-1 h-1 rounded-full bg-primary-light shrink-0" />
-                        {feature[lang]}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <div className="mb-8">
-                <h3 className="text-xs text-text-tertiary font-medium tracking-widest uppercase mb-4">
-                  {tr('modal.tech', lang)}
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {project.techs.map((tech) => (
-                    <span
-                      key={tech}
-                      className="text-xs px-3 py-1.5 rounded-full bg-tag text-text-secondary"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {(project.github || project.demo) && (
-                <div className="flex items-center gap-3 pt-2">
-                  {project.github && (
-                    <a
-                      href={project.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-tag text-sm text-text-secondary hover:bg-tag-hover hover:text-text-primary transition-all duration-200"
-                    >
-                      <Github size={15} />
-                      GitHub
-                    </a>
+              {(dp.period || dp.role) && (
+                <div className="flex items-center gap-3 text-sm text-text-tertiary">
+                  {dp.period && <span>{dp.period}</span>}
+                  {dp.period && dp.role && (
+                    <span className="text-[4px]">&#9679;</span>
                   )}
-                  {project.demo && (
-                    <a
-                      href={project.demo}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-primary to-accent-blue text-sm text-white hover:opacity-90 transition-opacity duration-200"
-                    >
-                      <ExternalLink size={15} />
-                      {tr('modal.demo', lang)}
-                    </a>
-                  )}
+                  {dp.role && <span>{dp.role[lang]}</span>}
                 </div>
               )}
             </div>
-          </motion.div>
+
+            <p className="text-text-secondary leading-relaxed mb-8">
+              {dp.description[lang]}
+            </p>
+
+            {dp.details && dp.details.length > 0 && (
+              <div className="mb-8">
+                <h3 className="text-xs text-text-tertiary font-medium tracking-widest uppercase mb-4">
+                  {tr('modal.details', lang)}
+                </h3>
+                <ul className="space-y-2.5">
+                  {dp.details.map((detail, i) => (
+                    <li
+                      key={i}
+                      className="text-sm text-text-secondary flex items-start gap-2.5"
+                    >
+                      <span className="text-primary mt-1.5 text-[5px]">
+                        &#9679;
+                      </span>
+                      {detail[lang]}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {dp.features && dp.features.length > 0 && (
+              <div className="mb-8">
+                <h3 className="text-xs text-text-tertiary font-medium tracking-widest uppercase mb-4">
+                  {tr('modal.features', lang)}
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {dp.features.map((feature, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center gap-2.5 text-sm text-text-secondary px-3 py-2 rounded-lg bg-feature"
+                    >
+                      <div className="w-1 h-1 rounded-full bg-primary-light shrink-0" />
+                      {feature[lang]}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="mb-8">
+              <h3 className="text-xs text-text-tertiary font-medium tracking-widest uppercase mb-4">
+                {tr('modal.tech', lang)}
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {dp.techs.map((tech) => (
+                  <span
+                    key={tech}
+                    className="text-xs px-3 py-1.5 rounded-full bg-tag text-text-secondary"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {(dp.github || dp.demo) && (
+              <div className="flex items-center gap-3 pt-2">
+                {dp.github && (
+                  <a
+                    href={dp.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-tag text-sm text-text-secondary hover:bg-tag-hover hover:text-text-primary transition-all duration-200"
+                  >
+                    <Github size={15} />
+                    GitHub
+                  </a>
+                )}
+                {dp.demo && (
+                  <a
+                    href={dp.demo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-primary to-accent-blue text-sm text-white hover:opacity-90 transition-opacity duration-200"
+                  >
+                    <ExternalLink size={15} />
+                    {tr('modal.demo', lang)}
+                  </a>
+                )}
+              </div>
+            )}
+          </div>
+          </div>
         </motion.div>
-        </>
-      )}
-    </AnimatePresence>,
+      </div>
+    </div>,
     document.body,
   );
 }

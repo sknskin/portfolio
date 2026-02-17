@@ -1,25 +1,29 @@
 import { motion } from 'framer-motion';
-import { ArrowDown, Github, Linkedin, ExternalLink, PenLine } from 'lucide-react';
-import { profile, socialLinks } from '../data/portfolio';
+import { ArrowDown } from 'lucide-react';
+import { profile } from '../data/portfolio';
 import { useLanguage } from '../contexts/LanguageContext';
 import { tr } from '../data/i18n';
-
-const iconMap: Record<string, typeof Github> = {
-  GitHub: Github,
-  LinkedIn: Linkedin,
-  Velog: PenLine,
-};
+import TechMarquee from './TechMarquee';
 
 export default function Hero() {
   const { lang } = useLanguage();
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center px-6 overflow-hidden">
-      {/* Background gradients */}
-      <div className="absolute inset-0 will-change-transform">
-        <div className="absolute top-[15%] left-[20%] w-[500px] h-[500px] bg-primary/15 rounded-full blur-[150px] will-change-transform" />
-        <div className="absolute bottom-[20%] right-[15%] w-[400px] h-[400px] bg-accent-blue/10 rounded-full blur-[130px] will-change-transform" />
-        <div className="absolute top-[60%] left-[50%] w-[300px] h-[300px] bg-accent-pink/8 rounded-full blur-[120px] will-change-transform" />
+    <section id="intro" className="relative min-h-screen flex items-center justify-center px-6">
+      {/* CSS-only animated background gradients */}
+      <div className="absolute inset-0">
+        <div
+          className="absolute w-[600px] h-[600px] bg-primary/20 rounded-full blur-[150px]"
+          style={{ top: '10%', left: '15%', animation: 'blob-1 20s ease-in-out infinite', transform: 'translate3d(0,0,0)' }}
+        />
+        <div
+          className="absolute w-[500px] h-[500px] bg-accent-blue/15 rounded-full blur-[130px]"
+          style={{ bottom: '15%', right: '10%', animation: 'blob-2 25s ease-in-out infinite', transform: 'translate3d(0,0,0)' }}
+        />
+        <div
+          className="absolute w-[400px] h-[400px] bg-accent-pink/10 rounded-full blur-[120px]"
+          style={{ top: '55%', left: '45%', animation: 'blob-3 22s ease-in-out infinite', transform: 'translate3d(0,0,0)' }}
+        />
       </div>
 
       <div className="relative z-10 text-center max-w-3xl">
@@ -66,23 +70,9 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="flex items-center justify-center gap-3 mb-16"
+          className="mb-14"
         >
-          {socialLinks.map((link) => {
-            const Icon = iconMap[link.label] || ExternalLink;
-            return (
-              <a
-                key={link.label}
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-tag text-text-secondary hover:bg-tag-hover hover:text-text-primary transition-all duration-300"
-              >
-                <Icon size={16} />
-                <span className="text-sm">{link.label}</span>
-              </a>
-            );
-          })}
+          <TechMarquee />
         </motion.div>
 
         <motion.a

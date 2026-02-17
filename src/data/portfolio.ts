@@ -41,22 +41,21 @@ export const profile = {
   } as Bi,
   about: {
     ko:
-      '안녕하세요! 저는 웹 개발에 열정을 가진 풀스택 개발자입니다. ' +
-      'Java, Vue.js, Jsp를 주로 사용하며, ' +
-      '사용자 중심의 서비스를 만드는 것을 좋아합니다. ' +
+      '안녕하세요! 저는 웹 개발에 열정을 가진 풀스택 개발자입니다.\n' +
+      '사용자 중심의 서비스를 만드는 것을 좋아합니다.\n' +
       '새로운 기술을 배우고 적용하는 것에 항상 즐거움을 느낍니다.',
     en:
-      'Hello! I am a full-stack developer passionate about web development. ' +
-      'I primarily work with Java, Vue.js, and JSP, ' +
-      'and I enjoy building user-centered services. ' +
+      'Hello! I am a full-stack developer passionate about web development.\n' +
+      'I enjoy building user-centered services.\n' +
       'I always find joy in learning and applying new technologies.',
   } as Bi,
   email: 'sknskin@naver.com',
+  phone: '010-7455-4829',
 };
 
 export const socialLinks: SocialLink[] = [
   { label: 'GitHub', url: 'https://github.com/sknskin' },
-  { label: 'Velog', url: 'https://velog.io/@dhhan/posts' },
+  // { label: 'Velog', url: 'https://velog.io/@dhhan/posts' },
 ];
 
 export const skills: Skill[] = [
@@ -78,7 +77,7 @@ export const skills: Skill[] = [
   {
     name: 'DevOps',
     icon: GitBranch,
-    items: ['Docker', 'Naver Cloud', 'Jenkins'],
+    items: ['Docker', 'Naver Cloud', 'Jenkins', 'Jeus'],
   },
   {
     name: 'Language',
@@ -168,6 +167,7 @@ export const projects: Project[] = [
 ];
 
 export const navItems = [
+  { label: { ko: '인트로', en: 'Intro' } as Bi, href: '#intro' },
   { label: { ko: '소개', en: 'About' } as Bi, href: '#about' },
   { label: { ko: '기술', en: 'Skills' } as Bi, href: '#skills' },
   { label: { ko: '프로젝트', en: 'Projects' } as Bi, href: '#projects' },

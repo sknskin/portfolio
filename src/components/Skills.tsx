@@ -1,34 +1,30 @@
-import { motion } from 'framer-motion';
 import { skills, navItems } from '../data/portfolio';
 import { useLanguage } from '../contexts/LanguageContext';
 import GlowCard from './GlowCard';
+import ScrollReveal from './ScrollReveal';
 
 export default function Skills() {
   const { lang } = useLanguage();
 
   return (
-    <section id="skills" className="py-28 px-6">
-      <div className="max-w-4xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ margin: '-100px' }}
-          transition={{ duration: 0.6 }}
-        >
+    <section id="skills" className="relative py-28 px-6">
+      <div className="relative max-w-4xl mx-auto">
+        <ScrollReveal>
           <h2 className="text-sm text-text-secondary font-medium mb-10 tracking-widest uppercase">
-            {navItems[1].label[lang]}
+            {navItems[2].label[lang]}
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {skills.map((skill, idx) => {
               const Icon = skill.icon;
               return (
-                <motion.div
+                <ScrollReveal
                   key={skill.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ margin: '-50px' }}
-                  transition={{ duration: 0.4, delay: idx * 0.08 }}
+                  className="h-full"
+                  y={20}
+                  duration={0.4}
+                  delay={idx * 0.08}
+                  margin="-50px"
                 >
                   <GlowCard className="h-full">
                     <div className="p-6 h-full">
@@ -50,11 +46,11 @@ export default function Skills() {
                       </div>
                     </div>
                   </GlowCard>
-                </motion.div>
+                </ScrollReveal>
               );
             })}
           </div>
-        </motion.div>
+        </ScrollReveal>
       </div>
     </section>
   );

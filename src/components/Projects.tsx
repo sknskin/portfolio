@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { Github, ExternalLink, ArrowRight } from 'lucide-react';
 import { projects, navItems, type Project } from '../data/portfolio';
 import { useLanguage } from '../contexts/LanguageContext';
 import GlowCard from './GlowCard';
 import ProjectModal from './ProjectModal';
+import ScrollReveal from './ScrollReveal';
 
 export default function Projects() {
   const { lang } = useLanguage();
@@ -19,29 +19,24 @@ export default function Projects() {
 
   return (
     <>
-      <section id="projects" className="py-28 px-6">
-        <div className="max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ margin: '-100px' }}
-            transition={{ duration: 0.6 }}
-          >
+      <section id="projects" className="relative py-28 px-6">
+        <div className="relative max-w-4xl mx-auto">
+          <ScrollReveal>
             <h2 className="text-sm text-text-secondary font-medium mb-10 tracking-widest uppercase">
-              {navItems[2].label[lang]}
+              {navItems[3].label[lang]}
             </h2>
 
             <div className="space-y-5">
               {projects.map((project, idx) => (
-                <motion.div
+                <ScrollReveal
                   key={project.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ margin: '-50px' }}
-                  transition={{ duration: 0.4, delay: idx * 0.1 }}
+                  y={20}
+                  duration={0.4}
+                  delay={idx * 0.1}
+                  margin="-50px"
                 >
                   <GlowCard
-                    className="cursor-pointer"
+                    className={`cursor-pointer transition-opacity duration-200 ${selected?.title === project.title ? 'opacity-0' : 'opacity-100'}`}
                     onClick={(e) => openModal(project, e)}
                   >
                     <div className="p-6 md:p-8">
@@ -106,10 +101,10 @@ export default function Projects() {
                       </div>
                     </div>
                   </GlowCard>
-                </motion.div>
+                </ScrollReveal>
               ))}
             </div>
-          </motion.div>
+          </ScrollReveal>
         </div>
       </section>
 
