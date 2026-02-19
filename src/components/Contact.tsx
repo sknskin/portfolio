@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Copy, Check, Github, Mail, Phone, MapPin } from 'lucide-react';
+import { Send, Copy, Check, Github, Mail, Phone } from 'lucide-react';
 import { profile, socialLinks, navItems } from '../data/portfolio';
 import { useLanguage } from '../contexts/LanguageContext';
 import { tr } from '../data/i18n';
@@ -64,7 +64,7 @@ export default function Contact() {
                   </button>
                 </div>
 
-                <div className="flex items-center gap-2">
+                {/* <div className="flex items-center gap-2">
                   <MapPin size={16} className="text-text-tertiary shrink-0" />
                   <span className="text-text-primary font-medium text-sm tracking-wide">
                     {profile.address[lang]}
@@ -75,7 +75,7 @@ export default function Contact() {
                   >
                     {copiedKey === 'address' ? <Check size={16} /> : <Copy size={16} />}
                   </button>
-                </div>
+                </div> */}
               </div>
 
               <div className="flex justify-center">

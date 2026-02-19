@@ -58,10 +58,10 @@ export const profile = {
   } as Bi,
   email: 'sknskin@naver.com',
   phone: '010-7455-4829',
-  address: {
-    ko: '경기도 용인시 기흥구 용구대로 2394번길 27 래미안1차 115동 904호',
-    en: '27, Yonggu-daero 2394beon-gil, Giheung-gu, Yongin-si, Gyeonggi-do',
-  } as Bi,
+  // address: {
+  //   ko: '경기도 용인시 기흥구 용구대로 2394번길 27 래미안1차 115동 904호',
+  //   en: '27, Yonggu-daero 2394beon-gil, Giheung-gu, Yongin-si, Gyeonggi-do',
+  // } as Bi,
 };
 
 export const education: Education[] = [

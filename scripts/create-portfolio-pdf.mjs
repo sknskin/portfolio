@@ -21,7 +21,7 @@ const profile = {
     '새로운 기술을 배우고 적용하는 것에 항상 즐거움을 느낍니다.',
   email: 'sknskin@naver.com',
   phone: '010-7455-4829',
-  address: '경기도 용인시 기흥구 용구대로 2394번길 27 래미안1차 115동 904호',
+  // address: '경기도 용인시 기흥구 용구대로 2394번길 27 래미안1차 115동 904호',
   github: 'https://github.com/sknskin',
 };
 
@@ -337,7 +337,7 @@ function buildHTML() {
   <div class="contact-bar">
     <span>📧 ${profile.email}</span>
     <span>📱 ${profile.phone}</span>
-    <span>📍 ${profile.address}</span>
+    <!-- <span>📍 ${profile.address}</span> -->
     <span>🔗 github.com/sknskin</span>
     <span>🌐 portfolio-ten-rho-to67iagzpy.vercel.app</span>
   </div>
