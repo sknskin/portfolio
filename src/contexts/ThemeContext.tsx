@@ -18,10 +18,7 @@ export function useTheme() {
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(() => {
-    const saved = localStorage.getItem('portfolio-theme');
-    return saved === 'light' ? 'light' : 'dark';
-  });
+  const [theme, setTheme] = useState<Theme>('dark');
 
   useLayoutEffect(() => {
     const root = document.documentElement;
