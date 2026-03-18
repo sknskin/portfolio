@@ -94,7 +94,7 @@ export default function GlowCard({ children, className = '', onClick }: GlowCard
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
       onClick={onClick}
-      className={`relative overflow-hidden rounded-2xl bg-dark-card transition-[box-shadow,background-color] duration-300 ${className}`}
+      className={`relative overflow-hidden rounded-xl bg-dark-card transition-[box-shadow,background-color] duration-300 border border-dark-border ${className}`}
     >
       <div
         ref={glowRef}
@@ -103,7 +103,7 @@ export default function GlowCard({ children, className = '', onClick }: GlowCard
       />
       <div
         ref={borderRef}
-        className="pointer-events-none absolute inset-0 z-0 rounded-2xl transition-opacity duration-300"
+        className="pointer-events-none absolute inset-0 z-0 rounded-xl transition-opacity duration-300"
         style={{
           boxShadow: 'inset 0 0 0 1px var(--glow-border)',
           opacity: 0,
@@ -111,7 +111,7 @@ export default function GlowCard({ children, className = '', onClick }: GlowCard
       />
       <div
         ref={defaultBorderRef}
-        className="pointer-events-none absolute inset-0 z-0 rounded-2xl transition-opacity duration-300"
+        className="pointer-events-none absolute inset-0 z-0 rounded-xl transition-opacity duration-300"
         style={{
           boxShadow: 'inset 0 0 0 1px var(--border-subtle)',
           opacity: 1,

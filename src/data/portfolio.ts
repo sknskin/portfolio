@@ -43,8 +43,8 @@ export const profile = {
   name: { ko: '한도희', en: 'Han Do Hee'} as Bi,
   role: { ko: '풀스택 개발자', en: 'Full-Stack Developer' } as Bi,
   tagline: {
-    ko: '깔끔한 코드와 사용자 경험을 중시하는 개발자입니다.',
-    en: 'A developer who values clean code and great user experience.',
+    ko: '금융·공공 SI/SM 프로젝트에서 쌓은 실무 역량을 기반으로, AI와 모던 웹 기술을 접목하여 더 나은 서비스를 만들어가는 개발자입니다.',
+    en: 'A developer building better services by combining hands-on experience from financial & public SI/SM projects with AI and modern web technologies.',
   } as Bi,
   about: {
     ko:
@@ -192,7 +192,6 @@ export const projects: Project[] = [
 ];
 
 export const navItems = [
-  { label: { ko: '인트로', en: 'Intro' } as Bi, href: '#intro' },
   { label: { ko: '소개', en: 'About' } as Bi, href: '#about' },
   { label: { ko: '기술', en: 'Skills' } as Bi, href: '#skills' },
   { label: { ko: '프로젝트', en: 'Projects' } as Bi, href: '#projects' },

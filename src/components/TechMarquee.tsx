@@ -13,7 +13,7 @@ const TechItem = memo(({ name, icon }: { name: string; icon: string }) => (
       loading="eager"
       decoding="async"
     />
-    <span className="text-xs text-text-secondary whitespace-nowrap">
+    <span className="text-xs font-mono text-text-secondary whitespace-nowrap">
       {name}
     </span>
   </div>

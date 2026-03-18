@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Github, ExternalLink, ArrowRight } from 'lucide-react';
-import { projects, navItems, type Project } from '../data/portfolio';
+import { Github, ExternalLink, ArrowRight, GitBranch } from 'lucide-react';
+import { projects, type Project } from '../data/portfolio';
 import { useLanguage } from '../contexts/LanguageContext';
 import GlowCard from './GlowCard';
 import ProjectModal from './ProjectModal';
@@ -22,8 +22,8 @@ export default function Projects() {
       <section id="projects" className="relative py-28 px-6">
         <div className="relative max-w-4xl mx-auto">
           <ScrollReveal>
-            <h2 className="text-sm text-text-secondary font-medium mb-10 tracking-widest uppercase">
-              {navItems[3].label[lang]}
+            <h2 className="font-mono text-sm text-terminal-green font-medium mb-10 tracking-widest">
+              <span className="text-text-tertiary">$</span> projects --show
             </h2>
 
             <div className="space-y-5">
@@ -42,28 +42,30 @@ export default function Projects() {
                     <div className="p-6 md:p-8">
                       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-3 mb-2">
-                            <h3 className="text-lg font-semibold text-text-primary">
+                          {/* Git repo style header */}
+                          <div className="flex items-center gap-2 mb-2 flex-wrap">
+                            <GitBranch size={14} className="text-terminal-green shrink-0" />
+                            <h3 className="text-lg font-semibold font-mono text-text-primary">
                               {project.title}
                             </h3>
                             {project.period && (
-                              <span className="text-xs text-text-tertiary hidden sm:inline">
+                              <span className="font-mono text-xs text-text-tertiary hidden sm:inline px-2 py-0.5 rounded border border-dark-border">
                                 {project.period}
                               </span>
                             )}
                           </div>
 
-                          <p className="text-text-secondary text-sm leading-relaxed mb-4">
+                          <p className="text-text-secondary text-sm leading-relaxed mb-4 pl-5">
                             {project.description[lang]}
                           </p>
 
-                          <div className="flex flex-wrap gap-2">
+                          <div className="flex flex-wrap gap-2 pl-5">
                             {project.techs.map((tech) => (
                               <span
                                 key={tech}
-                                className="text-xs px-2.5 py-1 rounded-full bg-tag text-text-secondary"
+                                className="font-mono text-xs px-2 py-0.5 rounded border border-dark-border text-terminal-cyan"
                               >
-                                {tech}
+                                [{tech}]
                               </span>
                             ))}
                           </div>
@@ -77,7 +79,7 @@ export default function Projects() {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 onClick={(e) => e.stopPropagation()}
-                                className="p-2 rounded-full bg-tag text-text-tertiary hover:text-text-primary hover:bg-tag-hover transition-all duration-200"
+                                className="p-2 rounded-lg bg-tag text-text-tertiary hover:text-terminal-green hover:bg-tag-hover transition-all duration-200"
                               >
                                 <Github size={16} />
                               </a>
@@ -88,13 +90,13 @@ export default function Projects() {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 onClick={(e) => e.stopPropagation()}
-                                className="p-2 rounded-full bg-tag text-text-tertiary hover:text-text-primary hover:bg-tag-hover transition-all duration-200"
+                                className="p-2 rounded-lg bg-tag text-text-tertiary hover:text-terminal-cyan hover:bg-tag-hover transition-all duration-200"
                               >
                                 <ExternalLink size={16} />
                               </a>
                             )}
                           </div>
-                          <div className="text-text-tertiary">
+                          <div className="text-terminal-green">
                             <ArrowRight size={16} />
                           </div>
                         </div>

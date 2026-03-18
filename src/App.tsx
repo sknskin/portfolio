@@ -30,8 +30,8 @@ export default function App() {
             <Contact />
           </main>
           <div className="relative z-10 py-8 text-center">
-            <p className="text-xs text-text-tertiary">
-              &copy; {new Date().getFullYear()} Portfolio. {tr('footer.built', lang)}
+            <p className="text-xs font-mono text-text-tertiary">
+              <span className="text-terminal-green">$</span> echo "&copy; {new Date().getFullYear()} Portfolio. {tr('footer.built', lang)}"
             </p>
           </div>
         </>

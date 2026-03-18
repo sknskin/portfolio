@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { preloadTechIcons } from '../data/techIcons';
 
-const FULL_TEXT = '> Loading...';
+const FULL_TEXT = '> Initializing...';
 
 export default function Preloader({ onFinish }: { onFinish: () => void }) {
   const [visible, setVisible] = useState(true);
@@ -37,9 +37,15 @@ export default function Preloader({ onFinish }: { onFinish: () => void }) {
           className="fixed inset-0 z-[9999] flex items-center justify-center"
           style={{ backgroundColor: 'var(--bg-glow-tint)' }}
         >
-          <span className="font-mono text-2xl text-text-secondary">
+          <span className="font-mono text-2xl text-terminal-green">
             {typed}
-            <span className="inline-block w-[2px] h-[1.1em] bg-primary ml-[2px] align-middle animate-[blink_0.8s_step-end_infinite]" />
+            <span
+              className="inline-block w-[2px] h-[1.1em] ml-[2px] align-middle"
+              style={{
+                backgroundColor: 'var(--terminal-green)',
+                animation: 'cursor-blink 0.8s step-end infinite',
+              }}
+            />
           </span>
         </motion.div>
       )}

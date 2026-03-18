@@ -4,6 +4,14 @@ import { navItems } from '../data/portfolio';
 import { useTheme } from '../contexts/ThemeContext';
 import { useLanguage } from '../contexts/LanguageContext';
 
+const terminalPaths: Record<string, string> = {
+  '#intro': '~/',
+  '#about': '~/about',
+  '#skills': '~/skills',
+  '#projects': '~/projects',
+  '#contact': '~/contact',
+};
+
 function useActiveSection() {
   const [active, setActive] = useState('#intro');
 
@@ -59,22 +67,22 @@ export default function Header() {
         <div className="flex items-center gap-2">
           <a
             href="#intro"
-            className="text-lg font-semibold text-text-primary tracking-tight hover:text-primary transition-colors mr-1"
+            className="text-sm font-mono font-semibold text-terminal-green tracking-tight hover:text-terminal-cyan transition-colors mr-1"
           >
-            Portfolio
+            <span className="text-text-tertiary">$</span> portfolio
           </a>
 
           <div className="flex items-center gap-1">
             <button
               onClick={toggleTheme}
-              className="p-1.5 rounded-lg bg-tag text-text-secondary hover:text-text-primary hover:bg-tag-hover transition-all duration-200 cursor-pointer"
+              className="p-1.5 rounded-lg bg-tag text-text-secondary hover:text-terminal-green hover:bg-tag-hover transition-all duration-200 cursor-pointer"
               aria-label="Toggle theme"
             >
               {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
             </button>
             <button
               onClick={toggleLang}
-              className="px-2 py-1 rounded-lg bg-tag text-text-secondary hover:text-text-primary hover:bg-tag-hover transition-all duration-200 text-xs font-medium cursor-pointer"
+              className="px-2 py-1 rounded-lg bg-tag text-text-secondary hover:text-terminal-green hover:bg-tag-hover transition-all duration-200 text-xs font-mono font-medium cursor-pointer"
             >
               {lang === 'ko' ? 'EN' : '한'}
             </button>
@@ -82,20 +90,22 @@ export default function Header() {
         </div>
 
         {/* Desktop nav */}
-        <ul className="hidden md:flex items-center gap-2">
+        <ul className="hidden md:flex items-center gap-1">
           {navItems.map((item) => {
             const isActive = activeSection === item.href;
+            const path = terminalPaths[item.href] || item.href;
             return (
               <li key={item.href}>
                 <a
                   href={item.href}
-                  className={`text-sm px-4 py-1.5 rounded-full transition-all duration-300 ${
+                  className={`font-mono text-sm px-3 py-1.5 rounded-lg transition-all duration-300 ${
                     isActive
-                      ? 'text-text-primary font-medium bg-tag shadow-[inset_0_0_0_1px_var(--glow-border)]'
-                      : 'text-text-secondary hover:text-text-primary'
+                      ? 'text-terminal-green font-medium bg-tag shadow-[inset_0_0_0_1px_var(--glow-border)]'
+                      : 'text-text-secondary hover:text-terminal-green'
                   }`}
                 >
-                  {item.label[lang]}
+                  {isActive && <span className="text-terminal-cyan mr-1">&gt;</span>}
+                  {path}
                 </a>
               </li>
             );
@@ -105,7 +115,7 @@ export default function Header() {
         {/* Mobile hamburger */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden text-text-secondary hover:text-text-primary transition-colors cursor-pointer"
+          className="md:hidden text-text-secondary hover:text-terminal-green transition-colors cursor-pointer"
           aria-label="Toggle menu"
         >
           {menuOpen ? <X size={22} /> : <Menu size={22} />}
@@ -114,22 +124,24 @@ export default function Header() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden bg-header-mobile backdrop-blur-xl px-6 py-4">
+        <div className="md:hidden bg-header-mobile backdrop-blur-xl px-6 py-4 border-t border-dark-border">
           <ul className="space-y-2">
             {navItems.map((item) => {
               const isActive = activeSection === item.href;
+              const path = terminalPaths[item.href] || item.href;
               return (
                 <li key={item.href}>
                   <a
                     href={item.href}
                     onClick={() => setMenuOpen(false)}
-                    className={`inline-block text-sm px-4 py-1.5 rounded-full transition-all duration-300 ${
+                    className={`inline-block font-mono text-sm px-3 py-1.5 rounded-lg transition-all duration-300 ${
                       isActive
-                        ? 'text-text-primary font-medium bg-tag shadow-[inset_0_0_0_1px_var(--glow-border)]'
-                        : 'text-text-secondary hover:text-text-primary'
+                        ? 'text-terminal-green font-medium bg-tag shadow-[inset_0_0_0_1px_var(--glow-border)]'
+                        : 'text-text-secondary hover:text-terminal-green'
                     }`}
                   >
-                    {item.label[lang]}
+                    {isActive && <span className="text-terminal-cyan mr-1">&gt;</span>}
+                    {path}
                   </a>
                 </li>
               );

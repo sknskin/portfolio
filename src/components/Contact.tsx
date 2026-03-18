@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Copy, Check, Github, Mail, Phone } from 'lucide-react';
-import { profile, socialLinks, navItems } from '../data/portfolio';
+import { profile, socialLinks } from '../data/portfolio';
 import { useLanguage } from '../contexts/LanguageContext';
 import { tr } from '../data/i18n';
 import GlowCard from './GlowCard';
@@ -26,89 +26,81 @@ export default function Contact() {
     <section id="contact" className="relative py-28 px-6">
       <div className="relative max-w-4xl mx-auto">
         <ScrollReveal>
-          <h2 className="text-sm text-text-secondary font-medium mb-10 tracking-widest uppercase">
-            {navItems[4].label[lang]}
+          <h2 className="font-mono text-sm text-terminal-green font-medium mb-10 tracking-widest">
+            <span className="text-text-tertiary">$</span> contact --send
           </h2>
 
-          {/* 연락처 카드 */}
+          {/* Contact card */}
           <GlowCard>
             <div className="p-8 md:p-10">
-              <p className="text-text-secondary mb-6 text-center leading-relaxed">
-                {tr('contact.desc', lang)}
+              <p className="font-mono text-text-secondary mb-6 text-center text-sm leading-relaxed">
+                <span className="text-terminal-cyan">#</span> {tr('contact.desc', lang)}
               </p>
 
-              <div className="flex flex-col items-center gap-3 mb-6">
+              <div className="flex flex-col items-center gap-3 mb-6 font-mono">
+                {/* Email */}
                 <div className="flex items-center gap-2">
-                  <Mail size={16} className="text-text-tertiary" />
-                  <span className="text-text-primary font-medium text-lg tracking-wide">
+                  <span className="text-terminal-green text-sm">email&gt;</span>
+                  <Mail size={14} className="text-text-tertiary" />
+                  <span className="text-text-primary font-medium text-sm tracking-wide">
                     {profile.email}
                   </span>
                   <button
                     onClick={(e) => handleCopy(profile.email, 'email', e)}
-                    className="p-2 rounded-full bg-tag text-text-tertiary hover:text-text-primary hover:bg-tag-hover transition-all duration-200 cursor-pointer"
+                    className="p-1.5 rounded-lg bg-tag text-text-tertiary hover:text-terminal-green hover:bg-tag-hover transition-all duration-200 cursor-pointer"
                   >
-                    {copiedKey === 'email' ? <Check size={16} /> : <Copy size={16} />}
+                    {copiedKey === 'email' ? <Check size={14} /> : <Copy size={14} />}
                   </button>
                 </div>
 
+                {/* Phone */}
                 <div className="flex items-center gap-2">
-                  <Phone size={16} className="text-text-tertiary" />
-                  <span className="text-text-primary font-medium text-lg tracking-wide">
+                  <span className="text-terminal-green text-sm">phone&gt;</span>
+                  <Phone size={14} className="text-text-tertiary" />
+                  <span className="text-text-primary font-medium text-sm tracking-wide">
                     {profile.phone}
                   </span>
                   <button
                     onClick={(e) => handleCopy(profile.phone, 'phone', e)}
-                    className="p-2 rounded-full bg-tag text-text-tertiary hover:text-text-primary hover:bg-tag-hover transition-all duration-200 cursor-pointer"
+                    className="p-1.5 rounded-lg bg-tag text-text-tertiary hover:text-terminal-green hover:bg-tag-hover transition-all duration-200 cursor-pointer"
                   >
-                    {copiedKey === 'phone' ? <Check size={16} /> : <Copy size={16} />}
+                    {copiedKey === 'phone' ? <Check size={14} /> : <Copy size={14} />}
                   </button>
                 </div>
-
-                {/* <div className="flex items-center gap-2">
-                  <MapPin size={16} className="text-text-tertiary shrink-0" />
-                  <span className="text-text-primary font-medium text-sm tracking-wide">
-                    {profile.address[lang]}
-                  </span>
-                  <button
-                    onClick={(e) => handleCopy(profile.address[lang], 'address', e)}
-                    className="p-2 rounded-full bg-tag text-text-tertiary hover:text-text-primary hover:bg-tag-hover transition-all duration-200 cursor-pointer shrink-0"
-                  >
-                    {copiedKey === 'address' ? <Check size={16} /> : <Copy size={16} />}
-                  </button>
-                </div> */}
               </div>
 
               <div className="flex justify-center">
                 <a
                   href={`mailto:${profile.email}`}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-primary to-accent-blue text-sm text-white hover:opacity-90 transition-opacity duration-200"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-lg font-mono bg-terminal-green/15 border border-terminal-green/30 text-sm text-terminal-green hover:bg-terminal-green/25 transition-all duration-200"
                 >
                   <Send size={15} />
-                  {tr('contact.send', lang)}
+                  $ send --message
                 </a>
               </div>
             </div>
           </GlowCard>
 
-          {/* GitHub 카드 */}
+          {/* GitHub card */}
           {githubLink && (
             <ScrollReveal y={20} duration={0.4} delay={0.1} margin="-50px" className="mt-5">
               <GlowCard>
                 <div className="p-8 md:p-10">
-                  <p className="text-text-secondary mb-6 text-center leading-relaxed">
-                    {tr('contact.github.desc', lang)}
+                  <p className="font-mono text-text-secondary mb-6 text-center text-sm leading-relaxed">
+                    <span className="text-terminal-cyan">#</span> {tr('contact.github.desc', lang)}
                   </p>
 
-                  <div className="flex items-center justify-center gap-2 mb-6">
-                    <Github size={16} className="text-text-tertiary" />
-                    <span className="text-text-primary font-medium text-lg tracking-wide">
+                  <div className="flex items-center justify-center gap-2 mb-6 font-mono">
+                    <span className="text-terminal-green text-sm">repo&gt;</span>
+                    <Github size={14} className="text-text-tertiary" />
+                    <span className="text-text-primary font-medium text-sm tracking-wide">
                       {githubLink.url.replace('https://', '')}
                     </span>
                     <button
                       onClick={(e) => handleCopy(githubLink.url, 'github', e)}
-                      className="p-2 rounded-full bg-tag text-text-tertiary hover:text-text-primary hover:bg-tag-hover transition-all duration-200 cursor-pointer"
+                      className="p-1.5 rounded-lg bg-tag text-text-tertiary hover:text-terminal-green hover:bg-tag-hover transition-all duration-200 cursor-pointer"
                     >
-                      {copiedKey === 'github' ? <Check size={16} /> : <Copy size={16} />}
+                      {copiedKey === 'github' ? <Check size={14} /> : <Copy size={14} />}
                     </button>
                   </div>
 
@@ -117,10 +109,10 @@ export default function Contact() {
                       href={githubLink.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-primary to-accent-blue text-sm text-white hover:opacity-90 transition-opacity duration-200"
+                      className="flex items-center gap-2 px-5 py-2.5 rounded-lg font-mono bg-terminal-cyan/15 border border-terminal-cyan/30 text-sm text-terminal-cyan hover:bg-terminal-cyan/25 transition-all duration-200"
                     >
                       <Github size={15} />
-                      GitHub
+                      $ open --github
                     </a>
                   </div>
                 </div>
@@ -138,7 +130,7 @@ export default function Contact() {
             animate={{ opacity: 1, x: 16, scale: 1 }}
             exit={{ opacity: 0, x: 8, scale: 0.9 }}
             transition={{ duration: 0.25 }}
-            className="fixed z-[9999] px-4 py-2.5 rounded-xl bg-dark-card text-text-primary text-sm font-medium pointer-events-none"
+            className="fixed z-[9999] px-4 py-2.5 rounded-lg bg-dark-card border border-terminal-green/30 text-text-primary text-sm font-mono pointer-events-none"
             style={{
               left: toastPos.x,
               top: toastPos.y - 16,
@@ -146,7 +138,7 @@ export default function Contact() {
             }}
           >
             <div className="flex items-center gap-2">
-              <Check size={14} className="text-primary-light" />
+              <Check size={14} className="text-terminal-green" />
               {tr('contact.copied', lang)}
             </div>
           </motion.div>

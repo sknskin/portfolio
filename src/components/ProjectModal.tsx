@@ -1,7 +1,7 @@
 import { useEffect, useCallback, useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
-import { X, Github, ExternalLink } from 'lucide-react';
+import { X, Github, ExternalLink, GitBranch } from 'lucide-react';
 import type { Project } from '../data/portfolio';
 import { useLanguage } from '../contexts/LanguageContext';
 import { tr } from '../data/i18n';
@@ -23,25 +23,21 @@ export default function ProjectModal({
   const { lang } = useLanguage();
   const [phase, setPhase] = useState<Phase>('idle');
   const [dp, setDp] = useState<Project | null>(null);
+  const [maximized, setMaximized] = useState(false);
   const glowRef = useRef<HTMLDivElement>(null);
 
-  // Capture project for display — persists through close animation
-  // (React "adjust state during render" pattern)
   if (project && project !== dp) {
     setDp(project);
   }
 
-  // Start opening when project arrives
   if (project && phase === 'idle') {
     setPhase('opening');
   }
 
-  // Clear display project when fully idle
   if (phase === 'idle' && !project && dp) {
     setDp(null);
   }
 
-  // Schedule content reveal after shell expansion
   useEffect(() => {
     if (phase === 'opening') {
       const t = window.setTimeout(() => setPhase('open'), DURATION * 1000);
@@ -50,10 +46,11 @@ export default function ProjectModal({
   }, [phase]);
 
   const handleClose = useCallback(() => {
+    setMaximized(false);
     setPhase('closing');
     setTimeout(() => {
-      onClose();          // card starts fade-in
-      setPhase('fading'); // shell starts cross-fade out
+      onClose();
+      setPhase('fading');
       setTimeout(() => setPhase('idle'), 250);
     }, DURATION * 0.6 * 1000);
   }, [onClose]);
@@ -93,8 +90,10 @@ export default function ProjectModal({
 
   if (phase === 'idle' || !dp) return null;
 
-  const modalWidth = Math.min(672, window.innerWidth - 64);
-  const modalHeight = Math.min(window.innerHeight * 0.85, 700);
+  const baseWidth = Math.min(672, window.innerWidth - 64);
+  const baseHeight = Math.min(window.innerHeight * 0.85, 700);
+  const modalWidth = maximized ? window.innerWidth - 32 : baseWidth;
+  const modalHeight = maximized ? window.innerHeight - 32 : baseHeight;
 
   const isExpanded = phase === 'opening' || phase === 'open';
   const showContent = phase === 'open';
@@ -133,7 +132,7 @@ export default function ProjectModal({
         }}
       />
 
-      {/* Shell — morphs from card rect to modal rect, cross-fades on close */}
+      {/* Shell */}
       <div
         style={{
           opacity: isFading ? 0 : 1,
@@ -141,7 +140,7 @@ export default function ProjectModal({
         }}
       >
         <motion.div
-          className="absolute rounded-2xl bg-dark-card overflow-hidden"
+          className="absolute rounded-xl bg-dark-card overflow-hidden border border-dark-border"
           style={{
             boxShadow: isExpanded
               ? 'var(--modal-card-shadow)'
@@ -157,15 +156,26 @@ export default function ProjectModal({
         >
           <div
             ref={glowRef}
-            className="pointer-events-none absolute inset-0 z-0 rounded-2xl transition-opacity duration-300"
+            className="pointer-events-none absolute inset-0 z-0 rounded-xl transition-opacity duration-300"
             style={{ opacity: 0 }}
           />
 
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent z-[1]" />
+          {/* Terminal-style top bar */}
+          <div className="absolute top-0 left-0 right-0 h-8 flex items-center gap-1.5 px-3 bg-black/20 border-b border-dark-border z-[3]"
+            style={{
+              opacity: showContent ? 1 : 0,
+              transition: `opacity ${DURATION * 0.5}s ease`,
+            }}
+          >
+            <button onClick={handleClose} className="w-2.5 h-2.5 rounded-full bg-[#ff5f56] hover:brightness-125 cursor-pointer" aria-label="닫기" />
+            <button onClick={handleClose} className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e] hover:brightness-125 cursor-pointer" aria-label="최소화" />
+            <button onClick={() => setMaximized((v) => !v)} className="w-2.5 h-2.5 rounded-full bg-[#27c93f] hover:brightness-125 cursor-pointer" aria-label="최대화" />
+            <span className="ml-2 text-[10px] font-mono text-text-tertiary truncate">{dp.title}</span>
+          </div>
 
           <button
             onClick={handleClose}
-            className="absolute top-4 right-4 z-10 p-2 rounded-full bg-tag text-text-tertiary hover:text-text-primary hover:bg-tag-hover transition-all duration-200 cursor-pointer"
+            className="absolute top-10 right-4 z-10 p-2 rounded-lg bg-tag text-text-tertiary hover:text-terminal-green hover:bg-tag-hover transition-all duration-200 cursor-pointer"
             style={{
               opacity: showContent ? 1 : 0,
               transition: `opacity ${DURATION * 0.5}s ease`,
@@ -179,7 +189,7 @@ export default function ProjectModal({
             style={{ overflowY: showContent ? 'auto' : 'hidden' }}
           >
           <div
-            className="relative z-[2] p-8 md:p-10"
+            className="relative z-[2] p-8 md:p-10 pt-12"
             style={{
               opacity: showContent ? 1 : 0,
               transform: showContent ? 'translateY(0)' : 'translateY(12px)',
@@ -187,38 +197,42 @@ export default function ProjectModal({
             }}
           >
             <div className="mb-8">
-              <h2 className="text-2xl font-bold text-text-primary mb-3">
-                {dp.title}
-              </h2>
+              <div className="flex items-center gap-2 mb-3">
+                <GitBranch size={18} className="text-terminal-green" />
+                <h2 className="text-2xl font-bold font-mono text-text-primary">
+                  {dp.title}
+                </h2>
+              </div>
 
               {(dp.period || dp.role) && (
-                <div className="flex items-center gap-3 text-sm text-text-tertiary">
-                  {dp.period && <span>{dp.period}</span>}
-                  {dp.period && dp.role && (
-                    <span className="text-[4px]">&#9679;</span>
+                <div className="flex items-center gap-3 text-sm font-mono text-text-tertiary">
+                  {dp.period && (
+                    <span className="px-2 py-0.5 rounded border border-dark-border text-xs">{dp.period}</span>
                   )}
-                  {dp.role && <span>{dp.role[lang]}</span>}
+                  {dp.role && (
+                    <span className="text-terminal-cyan text-xs">{dp.role[lang]}</span>
+                  )}
                 </div>
               )}
             </div>
 
-            <p className="text-text-secondary leading-relaxed mb-8">
+            <p className="text-text-secondary leading-relaxed mb-8 font-mono text-sm">
               {dp.description[lang]}
             </p>
 
             {dp.details && dp.details.length > 0 && (
               <div className="mb-8">
-                <h3 className="text-xs text-text-tertiary font-medium tracking-widest uppercase mb-4">
-                  {tr('modal.details', lang)}
+                <h3 className="font-mono text-xs text-terminal-green font-medium tracking-widest mb-4">
+                  $ {tr('modal.details', lang).toLowerCase()}
                 </h3>
                 <ul className="space-y-2.5">
                   {dp.details.map((detail, i) => (
                     <li
                       key={i}
-                      className="text-sm text-text-secondary flex items-start gap-2.5"
+                      className="text-sm font-mono text-text-secondary flex items-start gap-2.5"
                     >
-                      <span className="text-primary mt-1.5 text-[5px]">
-                        &#9679;
+                      <span className="text-terminal-green mt-0.5 text-xs">
+                        &gt;
                       </span>
                       {detail[lang]}
                     </li>
@@ -229,16 +243,16 @@ export default function ProjectModal({
 
             {dp.features && dp.features.length > 0 && (
               <div className="mb-8">
-                <h3 className="text-xs text-text-tertiary font-medium tracking-widest uppercase mb-4">
-                  {tr('modal.features', lang)}
+                <h3 className="font-mono text-xs text-terminal-green font-medium tracking-widest mb-4">
+                  $ {tr('modal.features', lang).toLowerCase()}
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {dp.features.map((feature, i) => (
                     <div
                       key={i}
-                      className="flex items-center gap-2.5 text-sm text-text-secondary px-3 py-2 rounded-lg bg-feature"
+                      className="flex items-center gap-2.5 text-sm font-mono text-text-secondary px-3 py-2 rounded-lg bg-feature border border-dark-border"
                     >
-                      <div className="w-1 h-1 rounded-full bg-primary-light shrink-0" />
+                      <div className="w-1.5 h-1.5 rounded-full bg-terminal-green shrink-0" />
                       {feature[lang]}
                     </div>
                   ))}
@@ -247,16 +261,16 @@ export default function ProjectModal({
             )}
 
             <div className="mb-8">
-              <h3 className="text-xs text-text-tertiary font-medium tracking-widest uppercase mb-4">
-                {tr('modal.tech', lang)}
+              <h3 className="font-mono text-xs text-terminal-green font-medium tracking-widest mb-4">
+                $ {tr('modal.tech', lang).toLowerCase()}
               </h3>
               <div className="flex flex-wrap gap-2">
                 {dp.techs.map((tech) => (
                   <span
                     key={tech}
-                    className="text-xs px-3 py-1.5 rounded-full bg-tag text-text-secondary"
+                    className="font-mono text-xs px-2.5 py-1 rounded border border-dark-border text-terminal-cyan"
                   >
-                    {tech}
+                    [{tech}]
                   </span>
                 ))}
               </div>
@@ -269,7 +283,7 @@ export default function ProjectModal({
                     href={dp.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-tag text-sm text-text-secondary hover:bg-tag-hover hover:text-text-primary transition-all duration-200"
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-lg font-mono bg-tag text-sm text-text-secondary hover:bg-tag-hover hover:text-terminal-green transition-all duration-200 border border-dark-border"
                   >
                     <Github size={15} />
                     GitHub
@@ -280,7 +294,7 @@ export default function ProjectModal({
                     href={dp.demo}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-primary to-accent-blue text-sm text-white hover:opacity-90 transition-opacity duration-200"
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-lg font-mono bg-terminal-green/15 border border-terminal-green/30 text-sm text-terminal-green hover:bg-terminal-green/25 transition-all duration-200"
                   >
                     <ExternalLink size={15} />
                     {tr('modal.demo', lang)}
