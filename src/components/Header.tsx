@@ -74,7 +74,7 @@ export default function Header() {
 
           <div className="flex items-center gap-1">
             <button
-              onClick={toggleTheme}
+              onClick={(e) => toggleTheme(e)}
               className="p-1.5 rounded-lg bg-tag text-text-secondary hover:text-terminal-green hover:bg-tag-hover transition-all duration-200 cursor-pointer"
               aria-label="Toggle theme"
             >

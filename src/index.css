@@ -1,5 +1,27 @@
 @import "tailwindcss";
 
+/* 테마 전환 애니메이션 — View Transition API
+   Theme transition animation — View Transition API */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 9999;
+}
+/* 모션 감소 설정 시 즉시 전환
+   Instant transition when reduced motion is preferred */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.01ms !important;
+  }
+}
+
 :root {
   --bg-main: #0a0a0a;
   --bg-card: #141920;
@@ -108,12 +130,8 @@ html {
   background-color: var(--bg-glow-tint);
 }
 
-html.disable-transitions,
-html.disable-transitions *,
-html.disable-transitions *::before,
-html.disable-transitions *::after {
-  transition: none !important;
-}
+/* disable-transitions 제거 — View Transition API로 대체
+   Removed — replaced by View Transition API */
 
 body {
   margin: 0;
