@@ -38,9 +38,9 @@ function createBloom(x: number, y: number): HTMLDivElement {
     position: fixed; inset: 0; z-index: 99999; pointer-events: none;
     will-change: transform, opacity;
     background:
-      radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.22) 0%, transparent 40%),
-      radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.12) 0%, transparent 55%),
-      radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.06) 0%, transparent 70%);
+      radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.16) 0%, transparent 40%),
+      radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.09) 0%, transparent 55%),
+      radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.04) 0%, transparent 70%);
     opacity: 0;
     transform: scale(0.6);
     transform-origin: ${x}px ${y}px;

@@ -25,19 +25,19 @@ html[data-theme-dir="to-light"] ~ ::view-transition-new(root),
 
 @keyframes tolight-out {
   0%   { opacity: 1;    filter: blur(0px)  brightness(1)    saturate(1);   }
-  20%  { opacity: 0.9;  filter: blur(1px)  brightness(1.03) saturate(0.85);}
-  40%  { opacity: 0.7;  filter: blur(3px)  brightness(1.06) saturate(0.6); }
-  60%  { opacity: 0.4;  filter: blur(6px)  brightness(1.04) saturate(0.3); }
-  80%  { opacity: 0.15; filter: blur(9px)  brightness(1.02) saturate(0.1); }
+  20%  { opacity: 0.9;  filter: blur(1px)  brightness(1.02) saturate(0.85);}
+  40%  { opacity: 0.7;  filter: blur(3px)  brightness(1.03) saturate(0.6); }
+  60%  { opacity: 0.4;  filter: blur(6px)  brightness(1.02) saturate(0.3); }
+  80%  { opacity: 0.15; filter: blur(9px)  brightness(1.01) saturate(0.1); }
   100% { opacity: 0;    filter: blur(12px) brightness(1)    saturate(0);   }
 }
 
 @keyframes tolight-in {
-  0%   { opacity: 0;    filter: blur(12px) brightness(1.08) saturate(0.2); }
-  15%  { opacity: 0.12; filter: blur(10px) brightness(1.06) saturate(0.3); }
-  30%  { opacity: 0.3;  filter: blur(7px)  brightness(1.04) saturate(0.45);}
-  50%  { opacity: 0.55; filter: blur(4px)  brightness(1.02) saturate(0.6); }
-  70%  { opacity: 0.78; filter: blur(2px)  brightness(1.01) saturate(0.8); }
+  0%   { opacity: 0;    filter: blur(12px) brightness(1.04) saturate(0.2); }
+  15%  { opacity: 0.12; filter: blur(10px) brightness(1.03) saturate(0.3); }
+  30%  { opacity: 0.3;  filter: blur(7px)  brightness(1.02) saturate(0.45);}
+  50%  { opacity: 0.55; filter: blur(4px)  brightness(1.01) saturate(0.6); }
+  70%  { opacity: 0.78; filter: blur(2px)  brightness(1)    saturate(0.8); }
   85%  { opacity: 0.92; filter: blur(0.5px) brightness(1)   saturate(0.92);}
   100% { opacity: 1;    filter: blur(0px)  brightness(1)    saturate(1);   }
 }
@@ -56,19 +56,19 @@ html[data-theme-dir="to-dark"] ~ ::view-transition-new(root),
 
 @keyframes todark-out {
   0%   { opacity: 1;    filter: blur(0px)  brightness(1)    saturate(1);   }
-  15%  { opacity: 0.92; filter: blur(1px)  brightness(1.06) saturate(0.9); }
-  35%  { opacity: 0.7;  filter: blur(4px)  brightness(1.1)  saturate(0.6); }
-  55%  { opacity: 0.4;  filter: blur(7px)  brightness(1.06) saturate(0.3); }
-  75%  { opacity: 0.15; filter: blur(10px) brightness(1.02) saturate(0.1); }
+  15%  { opacity: 0.92; filter: blur(1px)  brightness(1.03) saturate(0.9); }
+  35%  { opacity: 0.7;  filter: blur(4px)  brightness(1.05) saturate(0.6); }
+  55%  { opacity: 0.4;  filter: blur(7px)  brightness(1.03) saturate(0.3); }
+  75%  { opacity: 0.15; filter: blur(10px) brightness(1.01) saturate(0.1); }
   100% { opacity: 0;    filter: blur(12px) brightness(1)    saturate(0);   }
 }
 
 @keyframes todark-in {
-  0%   { opacity: 0;    filter: blur(12px) brightness(1.18) saturate(0);   }
-  15%  { opacity: 0.15; filter: blur(10px) brightness(1.14) saturate(0.1); }
-  30%  { opacity: 0.35; filter: blur(7px)  brightness(1.1)  saturate(0.3); }
-  50%  { opacity: 0.6;  filter: blur(4px)  brightness(1.05) saturate(0.55);}
-  70%  { opacity: 0.8;  filter: blur(2px)  brightness(1.02) saturate(0.75);}
+  0%   { opacity: 0;    filter: blur(12px) brightness(1.1)  saturate(0);   }
+  15%  { opacity: 0.15; filter: blur(10px) brightness(1.08) saturate(0.1); }
+  30%  { opacity: 0.35; filter: blur(7px)  brightness(1.05) saturate(0.3); }
+  50%  { opacity: 0.6;  filter: blur(4px)  brightness(1.03) saturate(0.55);}
+  70%  { opacity: 0.8;  filter: blur(2px)  brightness(1.01) saturate(0.75);}
   85%  { opacity: 0.93; filter: blur(0.5px) brightness(1)   saturate(0.9); }
   100% { opacity: 1;    filter: blur(0px)  brightness(1)    saturate(1);   }
 }
