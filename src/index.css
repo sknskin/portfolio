@@ -12,6 +12,17 @@
 }
 ::view-transition-new(root) {
   z-index: 9999;
+  /* clip-path 경계를 흐리게 — 날카로운 원형 경계 제거
+     Blur the clip-path edge — removes sharp circular boundary */
+  filter: blur(20px);
+  animation: theme-sharpen 1.2s ease-out forwards;
+}
+/* 전환 후반부에 블러를 점진적으로 제거하여 최종 화면을 선명하게
+   Gradually remove blur in the second half to sharpen the final view */
+@keyframes theme-sharpen {
+  0% { filter: blur(20px); }
+  60% { filter: blur(12px); }
+  100% { filter: blur(0px); }
 }
 /* 모션 감소 설정 시 즉시 전환
    Instant transition when reduced motion is preferred */
@@ -29,7 +40,7 @@
   z-index: 99999;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.3s ease-out;
+  transition: opacity 0.5s ease-out;
 }
 .theme-bloom-overlay.active {
   opacity: 1;
