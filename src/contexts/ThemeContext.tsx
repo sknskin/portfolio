@@ -17,6 +17,19 @@ export function useTheme() {
   return useContext(ThemeContext);
 }
 
+// 빛 번짐 오버레이 생성 — 클릭 위치에서 방사형 글로우
+// Create bloom overlay — radial glow from click position
+function createBloomOverlay(x: number, y: number, isToLight: boolean): HTMLDivElement {
+  const overlay = document.createElement('div');
+  overlay.className = 'theme-bloom-overlay';
+  const color = isToLight
+    ? 'rgba(255, 255, 255, 0.3)'
+    : 'rgba(110, 231, 183, 0.15)';
+  overlay.style.background = `radial-gradient(circle at ${x}px ${y}px, ${color} 0%, transparent 70%)`;
+  document.body.appendChild(overlay);
+  return overlay;
+}
+
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>('dark');
 
@@ -30,51 +43,62 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('portfolio-theme', theme);
   }, [theme]);
 
-  // 테마 전환 — 클릭 위치에서 빛이 번지듯 원형으로 전환
-  // Theme toggle — radial light spread from click position
+  // 테마 전환 — 클릭 위치에서 부드러운 빛 번짐 + 원형 확산
+  // Theme toggle — soft light bloom + circular spread from click position
   const toggleTheme = useCallback((e?: React.MouseEvent) => {
     const nextTheme: Theme = theme === 'dark' ? 'light' : 'dark';
+    const isToLight = nextTheme === 'light';
 
-    // 클릭 좌표 (없으면 화면 중앙)
-    // Click coordinates (fallback to center)
     const x = e?.clientX ?? window.innerWidth / 2;
     const y = e?.clientY ?? window.innerHeight / 2;
 
-    // 화면 꼭짓점까지의 최대 거리 (원이 화면을 완전히 덮는 반지름)
-    // Max distance to screen corner (radius to fully cover screen)
     const maxRadius = Math.hypot(
       Math.max(x, window.innerWidth - x),
       Math.max(y, window.innerHeight - y),
     );
 
-    // View Transition API 지원 시 — 부드러운 원형 확산 애니메이션
-    // When View Transition API is supported — smooth radial spread animation
+    // 빛 번짐 오버레이 표시
+    // Show bloom overlay
+    const overlay = createBloomOverlay(x, y, isToLight);
+    requestAnimationFrame(() => overlay.classList.add('active'));
+
     if (document.startViewTransition) {
       const transition = document.startViewTransition(() => {
         setTheme(nextTheme);
       });
 
       transition.ready.then(() => {
-        // 새 뷰를 원형 clip-path로 애니메이션
-        // Animate new view with circular clip-path
+        // 부드러운 경계의 원형 확산 — 더 긴 시간 + 부드러운 이징
+        // Soft-edged circular spread — longer duration + smooth easing
         document.documentElement.animate(
           {
             clipPath: [
-              `circle(0px at ${x}px ${y}px)`,
-              `circle(${maxRadius}px at ${x}px ${y}px)`,
+              `circle(0% at ${x}px ${y}px)`,
+              `circle(${maxRadius + 100}px at ${x}px ${y}px)`,
             ],
           },
           {
-            duration: 500,
-            easing: 'ease-out',
+            duration: 700,
+            easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
             pseudoElement: '::view-transition-new(root)',
           },
         );
       });
+
+      // 전환 완료 후 오버레이 제거
+      // Remove overlay after transition completes
+      transition.finished.then(() => {
+        overlay.classList.remove('active');
+        setTimeout(() => overlay.remove(), 300);
+      });
     } else {
-      // 미지원 브라우저 — 기존 방식 (즉시 전환)
-      // Unsupported browser — fallback (instant switch)
-      setTheme(nextTheme);
+      // 미지원 브라우저 — 오버레이 페이드만 사용
+      // Unsupported browser — use overlay fade only
+      setTimeout(() => {
+        setTheme(nextTheme);
+        overlay.classList.remove('active');
+        setTimeout(() => overlay.remove(), 300);
+      }, 200);
     }
   }, [theme]);
 

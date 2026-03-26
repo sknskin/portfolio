@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
-/* 테마 전환 애니메이션 — View Transition API
-   Theme transition animation — View Transition API */
+/* 테마 전환 애니메이션 — View Transition API + 부드러운 경계
+   Theme transition animation — View Transition API + soft edge */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
@@ -20,6 +20,19 @@
   ::view-transition-new(root) {
     animation-duration: 0.01ms !important;
   }
+}
+/* 테마 전환 중 오버레이 — 빛 번짐 효과
+   Theme transition overlay — light bloom effect */
+.theme-bloom-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+}
+.theme-bloom-overlay.active {
+  opacity: 1;
 }
 
 :root {
