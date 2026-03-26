@@ -1,29 +1,35 @@
 @import "tailwindcss";
 
-/* 테마 전환 애니메이션 — View Transition API + 부드러운 경계
-   Theme transition animation — View Transition API + soft edge */
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
-}
+/* 테마 전환 — 뿌옇게 시작 → 점차 선명하게 (View Transition API)
+   Theme transition — starts hazy → gradually sharpens */
+
+/* 이전 뷰: 서서히 뿌옇게 사라짐
+   Old view: slowly blurs out */
 ::view-transition-old(root) {
   z-index: 1;
+  animation: theme-fade-out 1s ease-in forwards;
 }
+
+/* 새 뷰: 뿌옇게 나타나서 점차 선명해짐
+   New view: appears hazy then gradually sharpens */
 ::view-transition-new(root) {
-  z-index: 9999;
-  /* clip-path 경계를 흐리게 — 날카로운 원형 경계 제거
-     Blur the clip-path edge — removes sharp circular boundary */
-  filter: blur(20px);
-  animation: theme-sharpen 1.2s ease-out forwards;
+  z-index: 2;
+  animation: theme-fade-in 1.4s ease-out forwards;
 }
-/* 전환 후반부에 블러를 점진적으로 제거하여 최종 화면을 선명하게
-   Gradually remove blur in the second half to sharpen the final view */
-@keyframes theme-sharpen {
-  0% { filter: blur(20px); }
-  60% { filter: blur(12px); }
-  100% { filter: blur(0px); }
+
+@keyframes theme-fade-out {
+  0% { opacity: 1; filter: blur(0px); }
+  50% { opacity: 0.6; filter: blur(8px); }
+  100% { opacity: 0; filter: blur(16px); }
 }
+
+@keyframes theme-fade-in {
+  0% { opacity: 0; filter: blur(24px); }
+  30% { opacity: 0.4; filter: blur(16px); }
+  60% { opacity: 0.7; filter: blur(8px); }
+  100% { opacity: 1; filter: blur(0px); }
+}
+
 /* 모션 감소 설정 시 즉시 전환
    Instant transition when reduced motion is preferred */
 @media (prefers-reduced-motion: reduce) {
@@ -32,18 +38,16 @@
     animation-duration: 0.01ms !important;
   }
 }
-/* 테마 전환 중 오버레이 — 빛 번짐 효과
-   Theme transition overlay — light bloom effect */
+
+/* 빛 번짐 오버레이 — 버튼 위치에서 퍼지는 글로우
+   Bloom overlay — glow spreading from button position */
 .theme-bloom-overlay {
   position: fixed;
   inset: 0;
   z-index: 99999;
   pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.5s ease-out;
-}
-.theme-bloom-overlay.active {
-  opacity: 1;
+  transform-origin: center;
+  transition: transform 1.2s cubic-bezier(0.25, 0.1, 0.25, 1), opacity 0.8s ease-out;
 }
 
 :root {

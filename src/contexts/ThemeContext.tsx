@@ -17,32 +17,49 @@ export function useTheme() {
   return useContext(ThemeContext);
 }
 
-// 빛 번짐 오버레이 생성 — 버튼 위치에서 방사형 글로우
-// Create bloom overlay — radial glow from button position
-function showBloomOverlay(x: number, y: number, isToLight: boolean): HTMLDivElement {
+// 버튼 중심 좌표 반환
+// Get button center coordinates
+function getButtonCenter(e?: React.MouseEvent): { x: number; y: number } {
+  const btn = e?.currentTarget as HTMLElement | null;
+  if (btn) {
+    const rect = btn.getBoundingClientRect();
+    return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+  }
+  return { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+}
+
+// 빛 번짐 오버레이 — 버튼 위치에서 서서히 퍼지는 글로우
+// Bloom overlay — glow that slowly spreads from button position
+function createBloomOverlay(x: number, y: number, isToLight: boolean): HTMLDivElement {
   const overlay = document.createElement('div');
   overlay.className = 'theme-bloom-overlay';
 
-  // 다중 레이어 그라데이션 — 경계를 더욱 흐리게
-  // Multi-layer gradient — makes edge much softer
-  const c1 = isToLight ? 'rgba(255,255,255,0.45)' : 'rgba(110,231,183,0.2)';
-  const c2 = isToLight ? 'rgba(255,255,255,0.15)' : 'rgba(110,231,183,0.08)';
-  overlay.style.background = [
-    `radial-gradient(circle at ${x}px ${y}px, ${c1} 0%, transparent 50%)`,
-    `radial-gradient(circle at ${x}px ${y}px, ${c2} 0%, transparent 80%)`,
-  ].join(', ');
+  const inner = isToLight ? 'rgba(255,255,255,0.5)' : 'rgba(110,231,183,0.25)';
+  const mid = isToLight ? 'rgba(255,255,255,0.2)' : 'rgba(110,231,183,0.1)';
+
+  // 작은 글로우로 시작 — CSS transition으로 확장
+  // Start small — expand via CSS transition
+  overlay.style.background = `radial-gradient(circle at ${x}px ${y}px, ${inner} 0%, ${mid} 30%, transparent 60%)`;
+  overlay.style.transform = 'scale(0.3)';
+  overlay.style.opacity = '0';
 
   document.body.appendChild(overlay);
-  requestAnimationFrame(() => overlay.classList.add('active'));
+
+  // 다음 프레임에서 확장 시작
+  // Start expansion on next frame
+  requestAnimationFrame(() => {
+    overlay.style.transform = 'scale(3)';
+    overlay.style.opacity = '1';
+  });
+
   return overlay;
 }
 
 function removeBloomOverlay(overlay: HTMLDivElement) {
-  overlay.classList.remove('active');
+  overlay.style.opacity = '0';
+  overlay.style.transform = 'scale(4)';
   overlay.addEventListener('transitionend', () => overlay.remove(), { once: true });
-  // 안전장치 — transitionend 미발생 시 제거
-  // Safety — remove if transitionend doesn't fire
-  setTimeout(() => { if (overlay.parentNode) overlay.remove(); }, 600);
+  setTimeout(() => { if (overlay.parentNode) overlay.remove(); }, 2000);
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
@@ -58,67 +75,38 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('portfolio-theme', theme);
   }, [theme]);
 
-  // 테마 전환 — 버튼 중앙에서 부드러운 빛 번짐 확산
-  // Theme toggle — soft light bloom spreading from button center
+  // 테마 전환 — 빛이 번지듯 뿌옇게 → 점차 선명하게
+  // Theme toggle — hazy light bloom → gradually clears into new theme
   const toggleTheme = useCallback((e?: React.MouseEvent) => {
     const nextTheme: Theme = theme === 'dark' ? 'light' : 'dark';
     const isToLight = nextTheme === 'light';
+    const { x, y } = getButtonCenter(e);
 
-    // 버튼 요소의 정중앙 좌표 사용 (클릭 위치가 아닌 아이콘 중심)
-    // Use exact center of button element (not click position)
-    let x: number, y: number;
-    const btn = e?.currentTarget as HTMLElement | null;
-    if (btn) {
-      const rect = btn.getBoundingClientRect();
-      x = rect.left + rect.width / 2;
-      y = rect.top + rect.height / 2;
-    } else {
-      x = window.innerWidth / 2;
-      y = window.innerHeight / 2;
-    }
-
-    // 화면 대각선 + 여유 — 원이 화면을 완전히 덮는 반지름
-    // Screen diagonal + margin — radius to fully cover screen
-    const maxRadius = Math.hypot(
-      Math.max(x, window.innerWidth - x),
-      Math.max(y, window.innerHeight - y),
-    ) + 200;
-
-    // 빛 번짐 오버레이
-    // Bloom overlay
-    const overlay = showBloomOverlay(x, y, isToLight);
+    // 빛 번짐 오버레이 시작
+    // Start bloom overlay
+    const overlay = createBloomOverlay(x, y, isToLight);
 
     if (document.startViewTransition) {
-      const transition = document.startViewTransition(() => {
-        setTheme(nextTheme);
-      });
+      // 오버레이가 퍼진 뒤 테마 전환 시작
+      // Start theme switch after overlay has spread
+      setTimeout(() => {
+        const transition = document.startViewTransition(() => {
+          setTheme(nextTheme);
+        });
 
-      transition.ready.then(() => {
-        // 균일하게 천천히 확산 — linear easing으로 일정한 속도
-        // Even, slow spread — linear easing for constant speed
-        document.documentElement.animate(
-          {
-            clipPath: [
-              `circle(0px at ${x}px ${y}px)`,
-              `circle(${maxRadius}px at ${x}px ${y}px)`,
-            ],
-          },
-          {
-            duration: 1200,
-            easing: 'cubic-bezier(0.25, 0.1, 0.25, 1)',
-            pseudoElement: '::view-transition-new(root)',
-          },
-        );
-      });
-
-      transition.finished.then(() => removeBloomOverlay(overlay));
+        transition.finished.then(() => {
+          // 전환 완료 후 오버레이 서서히 제거
+          // Slowly remove overlay after transition
+          setTimeout(() => removeBloomOverlay(overlay), 200);
+        });
+      }, 400);
     } else {
-      // 미지원 브라우저 — 오버레이 페이드
-      // Unsupported browser — overlay fade
+      // 미지원 브라우저
+      // Unsupported browser
       setTimeout(() => {
         setTheme(nextTheme);
-        removeBloomOverlay(overlay);
-      }, 300);
+        setTimeout(() => removeBloomOverlay(overlay), 300);
+      }, 400);
     }
   }, [theme]);
 
