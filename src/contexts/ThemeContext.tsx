@@ -88,16 +88,21 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const bloom = createBloom(x, y);
 
     if (document.startViewTransition) {
-      // 글로우가 충분히 퍼진 뒤 테마 전환 시작 — 빛이 먼저 번지고 그 안에서 색이 바뀌는 느낌
-      // Wait for glow to spread, then start transition — light spreads first, colors change within
       setTimeout(() => {
+        // 방향별 CSS 애니메이션 분기를 위해 클래스 설정
+        // Set direction class for CSS animation branching
+        document.documentElement.setAttribute('data-theme-dir', nextTheme === 'light' ? 'to-light' : 'to-dark');
+
         const t = document.startViewTransition(() => setTheme(nextTheme));
 
         // 크로스페이드 시작 직후 글로우 서서히 소멸 — 두 애니메이션이 자연스럽게 겹침
         // Bloom fades shortly after crossfade starts — both animations overlap naturally
         setTimeout(() => fadeOutBloom(bloom), 400);
 
-        t.finished.then(() => { transitioning.current = false; });
+        t.finished.then(() => {
+          document.documentElement.removeAttribute('data-theme-dir');
+          transitioning.current = false;
+        });
       }, 500);
     } else {
       setTimeout(() => {
