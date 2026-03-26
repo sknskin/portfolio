@@ -99,13 +99,15 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       // 글로우가 약간 퍼진 뒤 테마 전환
       // Switch theme after glow has slightly spread
       setTimeout(() => {
-        const t = document.startViewTransition(() => setTheme(nextTheme));
-        t.finished.then(() => setTimeout(() => removeBloom(bloom), 300));
+        // 전환 시작과 동시에 글로우 제거 시작 — 전환 후 깜빡임 방지
+        // Start removing bloom at same time as transition — prevents flash after switch
+        removeBloom(bloom);
+        document.startViewTransition(() => setTheme(nextTheme));
       }, 300);
     } else {
       setTimeout(() => {
+        removeBloom(bloom);
         setTheme(nextTheme);
-        setTimeout(() => removeBloom(bloom), 400);
       }, 300);
     }
   }, [theme]);
