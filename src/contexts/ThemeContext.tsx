@@ -1,15 +1,17 @@
-import { createContext, useContext, useState, useLayoutEffect, useCallback, type ReactNode } from 'react';
+import { createContext, useContext, useState, useLayoutEffect, useCallback, useRef, type ReactNode, type RefObject } from 'react';
 
 type Theme = 'dark' | 'light';
 
 interface ThemeContextType {
   theme: Theme;
-  toggleTheme: (e?: React.MouseEvent) => void;
+  toggleTheme: () => void;
+  toggleBtnRef: RefObject<HTMLButtonElement | null>;
 }
 
 const ThemeContext = createContext<ThemeContextType>({
   theme: 'dark',
   toggleTheme: () => {},
+  toggleBtnRef: { current: null },
 });
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -17,53 +19,58 @@ export function useTheme() {
   return useContext(ThemeContext);
 }
 
-// 버튼 중심 좌표 반환
-// Get button center coordinates
-function getButtonCenter(e?: React.MouseEvent): { x: number; y: number } {
-  const btn = e?.currentTarget as HTMLElement | null;
+// 버튼 ref에서 정확한 중심 좌표 반환
+// Get exact center coordinates from button ref
+function getBtnCenter(btn: HTMLButtonElement | null): { x: number; y: number } {
   if (btn) {
-    const rect = btn.getBoundingClientRect();
-    return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+    const r = btn.getBoundingClientRect();
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
   }
-  return { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+  return { x: window.innerWidth / 2, y: 40 };
 }
 
-// 빛 번짐 오버레이 — 버튼 위치에서 서서히 퍼지는 글로우
-// Bloom overlay — glow that slowly spreads from button position
-function createBloomOverlay(x: number, y: number, isToLight: boolean): HTMLDivElement {
-  const overlay = document.createElement('div');
-  overlay.className = 'theme-bloom-overlay';
+// 빛 번짐 오버레이 — 버튼 위치에서 시작하는 글로우
+// Bloom overlay — glow starting from button position
+function createBloom(x: number, y: number): HTMLDivElement {
+  const el = document.createElement('div');
+  el.className = 'theme-bloom';
 
-  const inner = isToLight ? 'rgba(255,255,255,0.5)' : 'rgba(110,231,183,0.25)';
-  const mid = isToLight ? 'rgba(255,255,255,0.2)' : 'rgba(110,231,183,0.1)';
-
-  // 작은 글로우로 시작 — CSS transition으로 확장
-  // Start small — expand via CSS transition
-  overlay.style.background = `radial-gradient(circle at ${x}px ${y}px, ${inner} 0%, ${mid} 30%, transparent 60%)`;
-  overlay.style.transform = 'scale(0.3)';
-  overlay.style.opacity = '0';
-
-  document.body.appendChild(overlay);
+  // 양방향 동일한 부드러운 흰색 글로우 (다크/라이트 모두)
+  // Same soft white glow for both directions
+  el.style.cssText = `
+    position:fixed; inset:0; z-index:99999; pointer-events:none;
+    background: radial-gradient(circle at ${x}px ${y}px,
+      rgba(255,255,255,0.35) 0%,
+      rgba(255,255,255,0.15) 20%,
+      rgba(255,255,255,0.05) 40%,
+      transparent 65%);
+    opacity:0;
+    transform: scale(1);
+    transform-origin: ${x}px ${y}px;
+    transition: opacity 0.6s ease-out, transform 1.8s cubic-bezier(0.22, 1, 0.36, 1);
+  `;
+  document.body.appendChild(el);
 
   // 다음 프레임에서 확장 시작
   // Start expansion on next frame
   requestAnimationFrame(() => {
-    overlay.style.transform = 'scale(3)';
-    overlay.style.opacity = '1';
+    el.style.opacity = '1';
+    el.style.transform = 'scale(4)';
   });
 
-  return overlay;
+  return el;
 }
 
-function removeBloomOverlay(overlay: HTMLDivElement) {
-  overlay.style.opacity = '0';
-  overlay.style.transform = 'scale(4)';
-  overlay.addEventListener('transitionend', () => overlay.remove(), { once: true });
-  setTimeout(() => { if (overlay.parentNode) overlay.remove(); }, 2000);
+function removeBloom(el: HTMLDivElement) {
+  el.style.opacity = '0';
+  const handler = () => el.remove();
+  el.addEventListener('transitionend', handler, { once: true });
+  setTimeout(() => { if (el.parentNode) el.remove(); }, 2000);
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>('dark');
+  const toggleBtnRef = useRef<HTMLButtonElement>(null);
 
   useLayoutEffect(() => {
     const root = document.documentElement;
@@ -75,43 +82,36 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('portfolio-theme', theme);
   }, [theme]);
 
-  // 테마 전환 — 빛이 번지듯 뿌옇게 → 점차 선명하게
-  // Theme toggle — hazy light bloom → gradually clears into new theme
-  const toggleTheme = useCallback((e?: React.MouseEvent) => {
+  // 테마 전환 — 양방향 동일한 빛 번짐 + 뿌연 크로스페이드
+  // Theme toggle — same bloom + hazy crossfade in both directions
+  const toggleTheme = useCallback(() => {
     const nextTheme: Theme = theme === 'dark' ? 'light' : 'dark';
-    const isToLight = nextTheme === 'light';
-    const { x, y } = getButtonCenter(e);
 
-    // 빛 번짐 오버레이 시작
-    // Start bloom overlay
-    const overlay = createBloomOverlay(x, y, isToLight);
+    // 항상 버튼 ref에서 좌표 추출 — 모바일/웹 동일
+    // Always get coords from button ref — same on mobile/web
+    const { x, y } = getBtnCenter(toggleBtnRef.current);
+
+    // 빛 번짐 시작
+    // Start bloom
+    const bloom = createBloom(x, y);
 
     if (document.startViewTransition) {
-      // 오버레이가 퍼진 뒤 테마 전환 시작
-      // Start theme switch after overlay has spread
+      // 글로우가 약간 퍼진 뒤 테마 전환
+      // Switch theme after glow has slightly spread
       setTimeout(() => {
-        const transition = document.startViewTransition(() => {
-          setTheme(nextTheme);
-        });
-
-        transition.finished.then(() => {
-          // 전환 완료 후 오버레이 서서히 제거
-          // Slowly remove overlay after transition
-          setTimeout(() => removeBloomOverlay(overlay), 200);
-        });
-      }, 400);
+        const t = document.startViewTransition(() => setTheme(nextTheme));
+        t.finished.then(() => setTimeout(() => removeBloom(bloom), 300));
+      }, 300);
     } else {
-      // 미지원 브라우저
-      // Unsupported browser
       setTimeout(() => {
         setTheme(nextTheme);
-        setTimeout(() => removeBloomOverlay(overlay), 300);
-      }, 400);
+        setTimeout(() => removeBloom(bloom), 400);
+      }, 300);
     }
   }, [theme]);
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, toggleBtnRef }}>
       {children}
     </ThemeContext.Provider>
   );

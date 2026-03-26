@@ -45,7 +45,7 @@ function useActiveSection() {
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme, toggleBtnRef } = useTheme();
   const { lang, toggleLang } = useLanguage();
   const activeSection = useActiveSection();
 
@@ -74,7 +74,8 @@ export default function Header() {
 
           <div className="flex items-center gap-1">
             <button
-              onClick={(e) => toggleTheme(e)}
+              ref={toggleBtnRef}
+              onClick={toggleTheme}
               className="p-1.5 rounded-lg bg-tag text-text-secondary hover:text-terminal-green hover:bg-tag-hover transition-all duration-200 cursor-pointer"
               aria-label="Toggle theme"
             >
