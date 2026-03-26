@@ -35,19 +35,20 @@ function createBloom(x: number, y: number): HTMLDivElement {
   const el = document.createElement('div');
   el.className = 'theme-bloom';
 
-  // 양방향 동일한 부드러운 흰색 글로우 (다크/라이트 모두)
-  // Same soft white glow for both directions
+  // 양방향 동일한 부드러운 글로우 — 더 넓고 은은하게
+  // Same soft glow for both directions — wider and subtler
   el.style.cssText = `
     position:fixed; inset:0; z-index:99999; pointer-events:none;
     background: radial-gradient(circle at ${x}px ${y}px,
-      rgba(255,255,255,0.35) 0%,
-      rgba(255,255,255,0.15) 20%,
-      rgba(255,255,255,0.05) 40%,
-      transparent 65%);
+      rgba(255,255,255,0.3) 0%,
+      rgba(255,255,255,0.18) 15%,
+      rgba(255,255,255,0.08) 35%,
+      rgba(255,255,255,0.02) 55%,
+      transparent 75%);
     opacity:0;
-    transform: scale(1);
+    transform: scale(0.8);
     transform-origin: ${x}px ${y}px;
-    transition: opacity 0.6s ease-out, transform 1.8s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 2s cubic-bezier(0.22, 1, 0.36, 1);
   `;
   document.body.appendChild(el);
 
@@ -62,10 +63,14 @@ function createBloom(x: number, y: number): HTMLDivElement {
 }
 
 function removeBloom(el: HTMLDivElement) {
+  // 제거 시 더 느리게 페이드아웃 — 자연스러운 소멸
+  // Slower fadeout on removal — natural dissipation
+  el.style.transition = 'opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), transform 2s cubic-bezier(0.22, 1, 0.36, 1)';
   el.style.opacity = '0';
+  el.style.transform = 'scale(5)';
   const handler = () => el.remove();
   el.addEventListener('transitionend', handler, { once: true });
-  setTimeout(() => { if (el.parentNode) el.remove(); }, 2000);
+  setTimeout(() => { if (el.parentNode) el.remove(); }, 3000);
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {

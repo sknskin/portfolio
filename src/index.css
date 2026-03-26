@@ -4,24 +4,29 @@
    Theme transition — same hazy crossfade in both directions */
 ::view-transition-old(root) {
   z-index: 1;
-  animation: theme-out 1.2s ease-in-out forwards;
+  animation: theme-out 1.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 ::view-transition-new(root) {
   z-index: 2;
-  animation: theme-in 1.2s ease-in-out forwards;
+  animation: theme-in 1.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
-/* 이전 뷰 — 뿌옇게 사라짐 / Old view — blurs out */
+/* 이전 뷰 — 뿌옇게 사라짐 (더 점진적으로)
+   Old view — blurs out (more gradual) */
 @keyframes theme-out {
-  0%   { opacity: 1; filter: blur(0px); }
-  40%  { opacity: 0.7; filter: blur(6px); }
-  100% { opacity: 0; filter: blur(14px); }
+  0%   { opacity: 1; filter: blur(0px) saturate(1); }
+  25%  { opacity: 0.85; filter: blur(3px) saturate(0.6); }
+  50%  { opacity: 0.5; filter: blur(8px) saturate(0.3); }
+  75%  { opacity: 0.2; filter: blur(12px) saturate(0.1); }
+  100% { opacity: 0; filter: blur(16px) saturate(0); }
 }
-/* 새 뷰 — 뿌옇게 나타나서 선명해짐 / New view — hazy then sharpens */
+/* 새 뷰 — 뿌옇고 탈색된 상태에서 점차 선명+채도 회복
+   New view — from hazy desaturated to sharp and vivid */
 @keyframes theme-in {
-  0%   { opacity: 0; filter: blur(14px); }
-  40%  { opacity: 0.5; filter: blur(8px); }
-  70%  { opacity: 0.8; filter: blur(3px); }
-  100% { opacity: 1; filter: blur(0px); }
+  0%   { opacity: 0; filter: blur(16px) saturate(0); }
+  20%  { opacity: 0.3; filter: blur(12px) saturate(0.2); }
+  45%  { opacity: 0.6; filter: blur(6px) saturate(0.5); }
+  70%  { opacity: 0.85; filter: blur(2px) saturate(0.8); }
+  100% { opacity: 1; filter: blur(0px) saturate(1); }
 }
 /* 모션 감소 시 즉시 전환 / Instant on reduced motion */
 @media (prefers-reduced-motion: reduce) {
