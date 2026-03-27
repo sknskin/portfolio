@@ -38,9 +38,9 @@ function createBloom(x: number, y: number): HTMLDivElement {
     position: fixed; inset: 0; z-index: 99999; pointer-events: none;
     will-change: transform, opacity;
     background:
-      radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.16) 0%, transparent 40%),
-      radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.09) 0%, transparent 55%),
-      radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.04) 0%, transparent 70%);
+      radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.12) 0%, transparent 40%),
+      radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.06) 0%, transparent 55%),
+      radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.03) 0%, transparent 70%);
     opacity: 0;
     transform: scale(0.6);
     transform-origin: ${x}px ${y}px;
@@ -59,9 +59,11 @@ function createBloom(x: number, y: number): HTMLDivElement {
 }
 
 function fadeOutBloom(el: HTMLDivElement) {
-  el.style.transition = 'opacity 1.6s cubic-bezier(0.4, 0, 0.2, 1)';
+  // 아주 느리게 사라짐 — 전환과 자연스럽게 겹침
+  // Very slow fadeout — overlaps naturally with transition
+  el.style.transition = 'opacity 2s cubic-bezier(0.4, 0, 0.2, 1)';
   el.style.opacity = '0';
-  setTimeout(() => { if (el.parentNode) el.remove(); }, 2000);
+  setTimeout(() => { if (el.parentNode) el.remove(); }, 2500);
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
@@ -88,12 +90,15 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const bloom = createBloom(x, y);
 
     if (document.startViewTransition) {
-      // 글로우를 먼저 서서히 줄이기 시작 — 전환 전에 미리 줄여서 깜빡임 방지
-      // Start fading bloom early — reduces before transition to prevent flash
-      setTimeout(() => fadeOutBloom(bloom), 350);
+      // 라이트 전환: 글로우를 아주 일찍 + 느리게 제거 — 밝기 요동 방지
+      // 다크 전환: 기존 타이밍 유지
+      // To-light: fade bloom very early + slowly — prevents brightness oscillation
+      // To-dark: keep existing timing
+      const isToLight = nextTheme === 'light';
+      setTimeout(() => fadeOutBloom(bloom), isToLight ? 200 : 350);
 
       setTimeout(() => {
-        document.documentElement.setAttribute('data-theme-dir', nextTheme === 'light' ? 'to-light' : 'to-dark');
+        document.documentElement.setAttribute('data-theme-dir', isToLight ? 'to-light' : 'to-dark');
         const t = document.startViewTransition(() => setTheme(nextTheme));
 
         t.finished.then(() => {
