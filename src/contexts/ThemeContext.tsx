@@ -59,11 +59,9 @@ function createBloom(x: number, y: number): HTMLDivElement {
 }
 
 function fadeOutBloom(el: HTMLDivElement) {
-  // 아주 느리게 사라짐 — 전환과 자연스럽게 겹침
-  // Very slow fadeout — overlaps naturally with transition
-  el.style.transition = 'opacity 2s cubic-bezier(0.4, 0, 0.2, 1)';
+  el.style.transition = 'opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1)';
   el.style.opacity = '0';
-  setTimeout(() => { if (el.parentNode) el.remove(); }, 2500);
+  setTimeout(() => { if (el.parentNode) el.remove(); }, 1500);
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
@@ -90,21 +88,13 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const bloom = createBloom(x, y);
 
     if (document.startViewTransition) {
-      // 라이트 전환: 글로우를 아주 일찍 + 느리게 제거 — 밝기 요동 방지
-      // 다크 전환: 기존 타이밍 유지
-      // To-light: fade bloom very early + slowly — prevents brightness oscillation
-      // To-dark: keep existing timing
-      const isToLight = nextTheme === 'light';
-      setTimeout(() => fadeOutBloom(bloom), isToLight ? 200 : 350);
+      // 글로우 소멸 시작 → 전환 시작 (글로우가 사라지면서 자연스럽게 이어짐)
+      // Start bloom fadeout → start transition (bloom fades into the crossfade)
+      setTimeout(() => fadeOutBloom(bloom), 350);
 
       setTimeout(() => {
-        document.documentElement.setAttribute('data-theme-dir', isToLight ? 'to-light' : 'to-dark');
         const t = document.startViewTransition(() => setTheme(nextTheme));
-
-        t.finished.then(() => {
-          document.documentElement.removeAttribute('data-theme-dir');
-          transitioning.current = false;
-        });
+        t.finished.then(() => { transitioning.current = false; });
       }, 500);
     } else {
       setTimeout(() => {
