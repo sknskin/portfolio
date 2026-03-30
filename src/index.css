@@ -1,9 +1,53 @@
 @import "tailwindcss";
 
 /* ═══════════════════════════════════════
-   테마 전환은 SVG 블롭 번짐 효과로 처리 (ThemeContext.tsx)
-   Theme transition handled by SVG blob spread effect (ThemeContext.tsx)
+   테마 전환 — 빛번짐 크로스페이드 (부드러운 블러 + 채도 전환)
+   Theme transition — light-bloom crossfade (smooth blur + saturation)
    ═══════════════════════════════════════ */
+::view-transition-old(root) {
+  z-index: 1;
+  will-change: opacity, filter;
+  animation: theme-out 1.5s cubic-bezier(0.25, 0, 0.15, 1) forwards;
+}
+::view-transition-new(root) {
+  z-index: 2;
+  will-change: opacity, filter;
+  animation: theme-in 1.5s cubic-bezier(0.25, 0, 0.15, 1) forwards;
+}
+
+/* 이전 뷰 — 부드러운 단조 감소 (블러 8px, 채도 0.15까지만 — 색감 유지)
+   Old view — gentle monotonic decrease (blur 8px, saturate to 0.15 — retains color) */
+@keyframes theme-out {
+  0%   { opacity: 1;    filter: blur(0px)   saturate(1);    }
+  15%  { opacity: 0.9;  filter: blur(0.5px) saturate(0.9);  }
+  30%  { opacity: 0.75; filter: blur(1.5px) saturate(0.75); }
+  45%  { opacity: 0.55; filter: blur(3px)   saturate(0.55); }
+  60%  { opacity: 0.35; filter: blur(4.5px) saturate(0.4);  }
+  75%  { opacity: 0.18; filter: blur(6px)   saturate(0.28); }
+  90%  { opacity: 0.05; filter: blur(7px)   saturate(0.18); }
+  100% { opacity: 0;    filter: blur(8px)   saturate(0.15); }
+}
+
+/* 새 뷰 — 부드러운 단조 증가 (후반부 색감 천천히 복원)
+   New view — gentle monotonic increase (color returns slowly in second half) */
+@keyframes theme-in {
+  0%   { opacity: 0;    filter: blur(8px)   saturate(0.15); }
+  10%  { opacity: 0.05; filter: blur(7px)   saturate(0.18); }
+  25%  { opacity: 0.18; filter: blur(6px)   saturate(0.28); }
+  40%  { opacity: 0.35; filter: blur(4.5px) saturate(0.4);  }
+  55%  { opacity: 0.55; filter: blur(3px)   saturate(0.55); }
+  70%  { opacity: 0.75; filter: blur(1.5px) saturate(0.75); }
+  85%  { opacity: 0.9;  filter: blur(0.5px) saturate(0.9);  }
+  100% { opacity: 1;    filter: blur(0px)   saturate(1);    }
+}
+
+/* 모션 감소 시 즉시 전환 / Instant on reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.01ms !important;
+  }
+}
 
 :root {
   --bg-main: #0a0a0a;
