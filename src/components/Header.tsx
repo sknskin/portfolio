@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, Sun, Moon } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { navItems } from '../data/portfolio';
-import { useTheme } from '../contexts/ThemeContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import ThemeToggle from './ThemeToggle';
 
 const terminalPaths: Record<string, string> = {
   '#intro': '~/',
@@ -45,7 +45,6 @@ function useActiveSection() {
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const { theme, toggleTheme, toggleBtnRef } = useTheme();
   const { lang, toggleLang } = useLanguage();
   const activeSection = useActiveSection();
 
@@ -73,14 +72,7 @@ export default function Header() {
           </a>
 
           <div className="flex items-center gap-1">
-            <button
-              ref={toggleBtnRef}
-              onClick={toggleTheme}
-              className="p-1.5 rounded-lg bg-tag text-text-secondary hover:text-terminal-green hover:bg-tag-hover transition-all duration-200 cursor-pointer"
-              aria-label="Toggle theme"
-            >
-              {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
-            </button>
+            <ThemeToggle />
             <button
               onClick={toggleLang}
               className="px-2 py-1 rounded-lg bg-tag text-text-secondary hover:text-terminal-green hover:bg-tag-hover transition-all duration-200 text-xs font-mono font-medium cursor-pointer"
