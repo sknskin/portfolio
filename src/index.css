@@ -157,6 +157,20 @@ html {
   background-color: var(--bg-glow-tint);
 }
 
+/* 고정 헤더 높이만큼 앵커 스크롤 오프셋 보정
+   Offset anchor scroll position to account for fixed header height */
+section[id] {
+  scroll-margin-top: 80px;
+}
+
+/* 키보드 내비게이션 시 포커스 링 표시 (마우스 클릭 시에는 숨김)
+   Show focus ring for keyboard navigation (hidden on mouse click) */
+:focus-visible {
+  outline: 2px solid var(--terminal-green);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 /* disable-transitions 제거 — View Transition API로 대체
    Removed — replaced by View Transition API */
 
@@ -271,6 +285,29 @@ html.light body::after {
   0%, 100% { transform: translate3d(0, 0, 0); }
   33% { transform: translate3d(50px, -30px, 0); }
   66% { transform: translate3d(-20px, 40px, 0); }
+}
+
+/* 모션 감소 시 장식 애니메이션 비활성화 (스크롤, 블롭, 마키, 바운스 등)
+   Disable decorative animations on reduced motion (scroll, blob, marquee, bounce, etc.) */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .animate-bounce {
+    animation: none !important;
+  }
+}
+
+/* 블롭/마키 애니메이션 모션 감소 대응
+   Blob and marquee animation reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  @keyframes blob-1 { from, to { transform: translate3d(0, 0, 0); } }
+  @keyframes blob-2 { from, to { transform: translate3d(0, 0, 0); } }
+  @keyframes blob-3 { from, to { transform: translate3d(0, 0, 0); } }
+  @keyframes blob-4 { from, to { transform: translate3d(0, 0, 0); } }
+  @keyframes blob-5 { from, to { transform: translate3d(0, 0, 0); } }
+  @keyframes marquee-left { from, to { transform: translate3d(0, 0, 0); } }
 }
 
 /* Terminal window styling */
