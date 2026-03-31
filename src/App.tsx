@@ -7,6 +7,7 @@ import Projects from './components/Projects';
 import Contact from './components/Contact';
 import BackgroundGlow from './components/BackgroundGlow';
 import Preloader from './components/Preloader';
+import ScrollToTop from './components/ScrollToTop';
 import { useLanguage } from './contexts/LanguageContext';
 import { tr } from './data/i18n';
 
@@ -34,6 +35,7 @@ export default function App() {
               <span className="text-terminal-green">$</span> echo "&copy; {new Date().getFullYear()} Portfolio. {tr('footer.built', lang)}"
             </p>
           </div>
+          <ScrollToTop />
         </>
       )}
     </>
