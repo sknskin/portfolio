@@ -7,37 +7,39 @@
 ::view-transition-old(root) {
   z-index: 1;
   will-change: opacity, filter;
-  animation: theme-out 1.5s cubic-bezier(0.25, 0, 0.15, 1) forwards;
+  animation: theme-out 1.6s cubic-bezier(0.33, 0, 0.15, 1) forwards;
 }
 ::view-transition-new(root) {
   z-index: 2;
   will-change: opacity, filter;
-  animation: theme-in 1.5s cubic-bezier(0.25, 0, 0.15, 1) forwards;
+  animation: theme-in 1.6s cubic-bezier(0.33, 0, 0.15, 1) forwards;
 }
 
-/* 이전 뷰 — 부드러운 단조 감소 + 전환 중간 밝기 억제 (brightness)
-   Old view — gentle decrease + brightness suppression during mid-transition */
+/* 이전 뷰 — 부드러운 S커브 감소 + 자연스러운 밝기 억제
+   Old view — smooth S-curve decrease + natural brightness suppression */
 @keyframes theme-out {
   0%   { opacity: 1;    filter: blur(0px)   saturate(1)    brightness(1);    }
-  15%  { opacity: 0.88; filter: blur(0.5px) saturate(0.85) brightness(0.75); }
-  30%  { opacity: 0.7;  filter: blur(1.5px) saturate(0.65) brightness(0.55); }
-  45%  { opacity: 0.5;  filter: blur(3px)   saturate(0.45) brightness(0.38); }
-  60%  { opacity: 0.32; filter: blur(4.5px) saturate(0.3)  brightness(0.3);  }
-  75%  { opacity: 0.16; filter: blur(6px)   saturate(0.2)  brightness(0.25); }
-  90%  { opacity: 0.04; filter: blur(7px)   saturate(0.12) brightness(0.2);  }
-  100% { opacity: 0;    filter: blur(8px)   saturate(0.1)  brightness(0.15); }
+  12%  { opacity: 0.92; filter: blur(0.3px) saturate(0.92) brightness(0.88); }
+  25%  { opacity: 0.78; filter: blur(1px)   saturate(0.78) brightness(0.7);  }
+  38%  { opacity: 0.6;  filter: blur(2px)   saturate(0.6)  brightness(0.52); }
+  50%  { opacity: 0.42; filter: blur(3.5px) saturate(0.42) brightness(0.38); }
+  62%  { opacity: 0.27; filter: blur(5px)   saturate(0.3)  brightness(0.32); }
+  75%  { opacity: 0.14; filter: blur(6px)   saturate(0.2)  brightness(0.28); }
+  88%  { opacity: 0.04; filter: blur(7px)   saturate(0.14) brightness(0.25); }
+  100% { opacity: 0;    filter: blur(8px)   saturate(0.1)  brightness(0.22); }
 }
 
-/* 새 뷰 — 부드러운 단조 증가 + 전환 초반 강한 밝기 억제로 눈부심 방지
-   New view — gentle increase + strong brightness suppression at start to prevent flash */
+/* 새 뷰 — 부드러운 S커브 증가 + 점진적 밝기 복원
+   New view — smooth S-curve increase + gradual brightness restoration */
 @keyframes theme-in {
-  0%   { opacity: 0;    filter: blur(8px)   saturate(0.1)  brightness(0.15); }
-  10%  { opacity: 0.04; filter: blur(7px)   saturate(0.12) brightness(0.2);  }
-  25%  { opacity: 0.16; filter: blur(6px)   saturate(0.2)  brightness(0.3);  }
-  40%  { opacity: 0.32; filter: blur(4.5px) saturate(0.3)  brightness(0.42); }
-  55%  { opacity: 0.5;  filter: blur(3px)   saturate(0.45) brightness(0.58); }
-  70%  { opacity: 0.7;  filter: blur(1.5px) saturate(0.65) brightness(0.75); }
-  85%  { opacity: 0.88; filter: blur(0.5px) saturate(0.85) brightness(0.9);  }
+  0%   { opacity: 0;    filter: blur(8px)   saturate(0.1)  brightness(0.22); }
+  12%  { opacity: 0.04; filter: blur(7px)   saturate(0.14) brightness(0.25); }
+  25%  { opacity: 0.14; filter: blur(6px)   saturate(0.2)  brightness(0.32); }
+  38%  { opacity: 0.27; filter: blur(5px)   saturate(0.3)  brightness(0.42); }
+  50%  { opacity: 0.42; filter: blur(3.5px) saturate(0.42) brightness(0.55); }
+  62%  { opacity: 0.6;  filter: blur(2px)   saturate(0.6)  brightness(0.7);  }
+  75%  { opacity: 0.78; filter: blur(1px)   saturate(0.78) brightness(0.84); }
+  88%  { opacity: 0.92; filter: blur(0.3px) saturate(0.92) brightness(0.95); }
   100% { opacity: 1;    filter: blur(0px)   saturate(1)    brightness(1);    }
 }
 
