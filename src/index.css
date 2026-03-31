@@ -89,43 +89,43 @@
 }
 
 html.light {
-  --bg-main: #f0f4f0;
-  --bg-card: rgba(255, 255, 255, 0.85);
-  --bg-surface: #e8ede8;
+  --bg-main: #d8dfd8;
+  --bg-card: rgba(220, 228, 220, 0.9);
+  --bg-surface: #cdd5cd;
   --text-1: #1a2e1a;
-  --text-2: #3d5a3d;
-  --text-3: #6b8a6b;
-  --border-subtle: rgba(34, 120, 60, 0.18);
-  --tag-bg: rgba(34, 120, 60, 0.10);
-  --tag-bg-hover: rgba(34, 120, 60, 0.20);
-  --header-bg: rgba(240, 244, 240, 0.4);
-  --header-mobile-bg: rgba(240, 244, 240, 0.75);
-  --glow-1: rgba(34, 120, 60, 0.45);
-  --glow-2: rgba(6, 140, 170, 0.30);
-  --glow-border: rgba(34, 120, 60, 0.55);
-  --card-hover-shadow: 0 8px 60px rgba(34, 120, 60, 0.30), 0 0 0 1px rgba(34, 120, 60, 0.25);
-  --card-hover-bg: rgba(255, 255, 255, 0.95);
+  --text-2: #334d33;
+  --text-3: #5a7a5a;
+  --border-subtle: rgba(34, 120, 60, 0.22);
+  --tag-bg: rgba(34, 120, 60, 0.12);
+  --tag-bg-hover: rgba(34, 120, 60, 0.22);
+  --header-bg: rgba(216, 223, 216, 0.5);
+  --header-mobile-bg: rgba(216, 223, 216, 0.85);
+  --glow-1: rgba(34, 120, 60, 0.35);
+  --glow-2: rgba(6, 140, 170, 0.22);
+  --glow-border: rgba(34, 120, 60, 0.45);
+  --card-hover-shadow: 0 8px 60px rgba(34, 120, 60, 0.25), 0 0 0 1px rgba(34, 120, 60, 0.20);
+  --card-hover-bg: rgba(220, 228, 220, 0.95);
   --section-glow-1: rgba(34, 120, 60, 0.08);
   --section-glow-2: rgba(6, 140, 170, 0.06);
   --section-glow-3: rgba(34, 120, 60, 0.04);
-  --bg-glow-1: rgba(34, 120, 60, 0.10);
-  --bg-glow-2: rgba(6, 140, 170, 0.07);
-  --bg-glow-3: rgba(34, 120, 60, 0.05);
-  --bg-glow-base: rgba(34, 120, 60, 0.04);
-  --bg-glow-tint: #f0f4f0;
-  --scrollbar-thumb: rgba(34, 120, 60, 0.20);
-  --scrollbar-hover: rgba(34, 120, 60, 0.35);
-  --timeline-line: rgba(34, 120, 60, 0.14);
+  --bg-glow-1: rgba(34, 120, 60, 0.08);
+  --bg-glow-2: rgba(6, 140, 170, 0.05);
+  --bg-glow-3: rgba(34, 120, 60, 0.04);
+  --bg-glow-base: rgba(34, 120, 60, 0.03);
+  --bg-glow-tint: #d8dfd8;
+  --scrollbar-thumb: rgba(34, 120, 60, 0.22);
+  --scrollbar-hover: rgba(34, 120, 60, 0.38);
+  --timeline-line: rgba(34, 120, 60, 0.16);
   --feature-bg: rgba(34, 120, 60, 0.10);
   --hero-from: #166534;
   --hero-via: #0e7490;
   --hero-to: #166534;
-  --modal-card-shadow: 0 8px 70px rgba(34, 120, 60, 0.30), 0 0 0 1px rgba(34, 120, 60, 0.20);
-  --modal-overlay: rgba(240, 244, 240, 0.65);
+  --modal-card-shadow: 0 8px 70px rgba(34, 120, 60, 0.25), 0 0 0 1px rgba(34, 120, 60, 0.18);
+  --modal-overlay: rgba(216, 223, 216, 0.7);
   --nav-active-border: rgba(34, 120, 60, 0.30);
   --terminal-green: #166534;
   --terminal-cyan: #0e7490;
-  --terminal-dim: #c5cfc5;
+  --terminal-dim: #b0bdb0;
 }
 
 @theme {
