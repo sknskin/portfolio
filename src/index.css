@@ -89,22 +89,22 @@
 }
 
 html.light {
-  --bg-main: #d8dfd8;
-  --bg-card: rgba(220, 228, 220, 0.9);
-  --bg-surface: #cdd5cd;
+  --bg-main: #c8d1c8;
+  --bg-card: rgba(200, 212, 200, 0.9);
+  --bg-surface: #bdc7bd;
   --text-1: #1a2e1a;
-  --text-2: #334d33;
-  --text-3: #5a7a5a;
+  --text-2: #2e4a2e;
+  --text-3: #4f6f4f;
   --border-subtle: rgba(34, 120, 60, 0.22);
   --tag-bg: rgba(34, 120, 60, 0.12);
   --tag-bg-hover: rgba(34, 120, 60, 0.22);
-  --header-bg: rgba(216, 223, 216, 0.5);
-  --header-mobile-bg: rgba(216, 223, 216, 0.85);
+  --header-bg: rgba(200, 209, 200, 0.5);
+  --header-mobile-bg: rgba(200, 209, 200, 0.85);
   --glow-1: rgba(34, 120, 60, 0.35);
   --glow-2: rgba(6, 140, 170, 0.22);
   --glow-border: rgba(34, 120, 60, 0.45);
   --card-hover-shadow: 0 8px 60px rgba(34, 120, 60, 0.25), 0 0 0 1px rgba(34, 120, 60, 0.20);
-  --card-hover-bg: rgba(220, 228, 220, 0.95);
+  --card-hover-bg: rgba(200, 212, 200, 0.95);
   --section-glow-1: rgba(34, 120, 60, 0.08);
   --section-glow-2: rgba(6, 140, 170, 0.06);
   --section-glow-3: rgba(34, 120, 60, 0.04);
@@ -112,7 +112,7 @@ html.light {
   --bg-glow-2: rgba(6, 140, 170, 0.05);
   --bg-glow-3: rgba(34, 120, 60, 0.04);
   --bg-glow-base: rgba(34, 120, 60, 0.03);
-  --bg-glow-tint: #d8dfd8;
+  --bg-glow-tint: #c8d1c8;
   --scrollbar-thumb: rgba(34, 120, 60, 0.22);
   --scrollbar-hover: rgba(34, 120, 60, 0.38);
   --timeline-line: rgba(34, 120, 60, 0.16);
@@ -121,11 +121,11 @@ html.light {
   --hero-via: #0e7490;
   --hero-to: #166534;
   --modal-card-shadow: 0 8px 70px rgba(34, 120, 60, 0.25), 0 0 0 1px rgba(34, 120, 60, 0.18);
-  --modal-overlay: rgba(216, 223, 216, 0.7);
+  --modal-overlay: rgba(200, 209, 200, 0.7);
   --nav-active-border: rgba(34, 120, 60, 0.30);
   --terminal-green: #166534;
   --terminal-cyan: #0e7490;
-  --terminal-dim: #b0bdb0;
+  --terminal-dim: #a0ada0;
 }
 
 @theme {
