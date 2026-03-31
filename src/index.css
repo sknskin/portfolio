@@ -7,40 +7,26 @@
 ::view-transition-old(root) {
   z-index: 1;
   will-change: opacity, filter;
-  animation: theme-out 1.6s cubic-bezier(0.33, 0, 0.15, 1) forwards;
+  animation: theme-out 1.4s ease-in-out forwards;
 }
 ::view-transition-new(root) {
   z-index: 2;
   will-change: opacity, filter;
-  animation: theme-in 1.6s cubic-bezier(0.33, 0, 0.15, 1) forwards;
+  animation: theme-in 1.4s ease-in-out forwards;
 }
 
-/* 이전 뷰 — 부드러운 S커브 감소 + 자연스러운 밝기 억제
-   Old view — smooth S-curve decrease + natural brightness suppression */
+/* 이전 뷰 — 시작/끝만 정의, 브라우저가 모든 중간값을 네이티브 보간
+   Old view — only define start/end, browser natively interpolates all intermediate values */
 @keyframes theme-out {
-  0%   { opacity: 1;    filter: blur(0px)   saturate(1)    brightness(1);    }
-  12%  { opacity: 0.92; filter: blur(0.3px) saturate(0.92) brightness(0.88); }
-  25%  { opacity: 0.78; filter: blur(1px)   saturate(0.78) brightness(0.7);  }
-  38%  { opacity: 0.6;  filter: blur(2px)   saturate(0.6)  brightness(0.52); }
-  50%  { opacity: 0.42; filter: blur(3.5px) saturate(0.42) brightness(0.38); }
-  62%  { opacity: 0.27; filter: blur(5px)   saturate(0.3)  brightness(0.32); }
-  75%  { opacity: 0.14; filter: blur(6px)   saturate(0.2)  brightness(0.28); }
-  88%  { opacity: 0.04; filter: blur(7px)   saturate(0.14) brightness(0.25); }
-  100% { opacity: 0;    filter: blur(8px)   saturate(0.1)  brightness(0.22); }
+  from { opacity: 1; filter: blur(0px) brightness(1);   }
+  to   { opacity: 0; filter: blur(6px) brightness(0.3); }
 }
 
-/* 새 뷰 — 부드러운 S커브 증가 + 점진적 밝기 복원
-   New view — smooth S-curve increase + gradual brightness restoration */
+/* 새 뷰 — 시작/끝만 정의, 브라우저가 모든 중간값을 네이티브 보간
+   New view — only define start/end, browser natively interpolates all intermediate values */
 @keyframes theme-in {
-  0%   { opacity: 0;    filter: blur(8px)   saturate(0.1)  brightness(0.22); }
-  12%  { opacity: 0.04; filter: blur(7px)   saturate(0.14) brightness(0.25); }
-  25%  { opacity: 0.14; filter: blur(6px)   saturate(0.2)  brightness(0.32); }
-  38%  { opacity: 0.27; filter: blur(5px)   saturate(0.3)  brightness(0.42); }
-  50%  { opacity: 0.42; filter: blur(3.5px) saturate(0.42) brightness(0.55); }
-  62%  { opacity: 0.6;  filter: blur(2px)   saturate(0.6)  brightness(0.7);  }
-  75%  { opacity: 0.78; filter: blur(1px)   saturate(0.78) brightness(0.84); }
-  88%  { opacity: 0.92; filter: blur(0.3px) saturate(0.92) brightness(0.95); }
-  100% { opacity: 1;    filter: blur(0px)   saturate(1)    brightness(1);    }
+  from { opacity: 0; filter: blur(6px) brightness(0.3); }
+  to   { opacity: 1; filter: blur(0px) brightness(1);   }
 }
 
 /* 모션 감소 시 즉시 전환 / Instant on reduced motion */
