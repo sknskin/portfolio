@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Menu, X, Sun, Moon } from 'lucide-react';
 import { navItems } from '../data/portfolio';
 import { useTheme } from '../contexts/ThemeContext';
@@ -48,6 +48,11 @@ export default function Header() {
   const { theme, toggleTheme, toggleBtnRef } = useTheme();
   const { lang, toggleLang } = useLanguage();
   const activeSection = useActiveSection();
+  const headerRef = useRef<HTMLElement>(null);
+
+  // 모바일 메뉴 닫기 핸들러
+  // Close mobile menu handler
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
@@ -55,8 +60,32 @@ export default function Header() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // 모바일 메뉴: 바깥 클릭 및 Escape 키로 닫기
+  // Mobile menu: close on outside click and Escape key
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const handleClickOutside = (e: MouseEvent) => {
+      if (headerRef.current && !headerRef.current.contains(e.target as Node)) {
+        closeMenu();
+      }
+    };
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeMenu();
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [menuOpen, closeMenu]);
+
   return (
     <header
+      ref={headerRef}
       className={`fixed top-0 left-0 right-0 z-50 transition-[background-color,backdrop-filter] duration-300 ${
         scrolled ? 'bg-header backdrop-blur-xl shadow-[0_1px_0_var(--border-subtle)]' : 'bg-transparent'
       }`}
@@ -123,7 +152,19 @@ export default function Header() {
         </button>
       </nav>
 
-      {/* Mobile menu */}
+      {/* 모바일 메뉴 백드롭 오버레이
+           Mobile menu backdrop overlay */}
+      {menuOpen && (
+        <div
+          className="fixed inset-0 z-[-1] md:hidden"
+          style={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', backdropFilter: 'blur(4px)' }}
+          onClick={closeMenu}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* 모바일 메뉴
+           Mobile menu */}
       {menuOpen && (
         <div className="md:hidden bg-header-mobile backdrop-blur-xl px-6 py-4 border-t border-dark-border">
           <ul className="space-y-2">
@@ -134,7 +175,7 @@ export default function Header() {
                 <li key={item.href}>
                   <a
                     href={item.href}
-                    onClick={() => setMenuOpen(false)}
+                    onClick={closeMenu}
                     className={`inline-block font-mono text-sm px-3 py-1.5 rounded-lg transition-all duration-300 ${
                       isActive
                         ? 'text-terminal-green font-medium bg-tag shadow-[inset_0_0_0_1px_var(--glow-border)]'
